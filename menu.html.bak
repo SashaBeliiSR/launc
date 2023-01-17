@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Oko-Games</title>
+	</head>
+	<body bgcolor="#000000">
+		<center><img src="photo\screen1.png" width="150" height="150"></center>
+		<center><img src="photo\button1.png" usemap="#panel1" width="150" height="31" border="0" alt="Панель управления" title="Панель управления"></center>
+		<center><img src="photo\button2.png" usemap="#panel2" width="150" height="31" border="0" alt="Панель управления" title="Панель управления"></center>
+		<center><img src="photo\button3.png" usemap="#panel3" width="150" height="31" border="0" alt="Панель управления" title="Панель управления"></center>
+		<center><img src="photo\button4.png" usemap="#panel4" width="150" height="31" border="0" alt="Панель управления" title="Панель управления"></center>
+		<map name="panel1">
+			<area href="menu.html" shape="rect" coords="0,0,149,30">
+		</map>
+		<map name="panel2">
+			<area href="primer1.html" shape="rect" coords="0,0,149,30">
+		</map>
+		<map name="panel3">
+			<area href="primer2.html" shape="rect" coords="0,0,149,30">
+		</map>
+		<map name="panel4">
+			<area href="primer3.html" shape="rect" coords="0,0,149,30">
+		</map>
+	</body>
+</html>

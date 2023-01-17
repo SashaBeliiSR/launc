@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Oko-Games</title>
+		<link rel="icon" href="photo\icon.ico" type="image/x-icon">
+	</head>
+	<frameset cols="150,*" border="0">
+<!--предупреждение-->
+		<noframes> Извините, но ваш браузер не поддерживает фреймы. Если хотите увидеть информацию об этом сайте то вам нужно зайти в настройки вашего браузера и включить видить фрэймы. </noframes>
+
+		<frame src="menu.html" scrolling="no" marginwidth="0" marginheight="0" noresize>
+		<frameset rows="75,*">
+			<frame src="logotype.html" scrolling="no" marginwidth="0" marginheight="0" noresize>
+			<frame src="text1.html" scrolling="auto" marginwidth="0" marginheight="0" noresize>
+		</frameset>
+	</frameset>
+</html>
