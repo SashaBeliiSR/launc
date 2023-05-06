@@ -5,7 +5,7 @@ result = result.substring(1);
 console.log(result);
 
 
-const baseUrl = 'http://6455f3055f9a4f2361374d32.mockapi.io/api/v1/games?id=' + result;
+const baseUrl = 'https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/games?id=' + result;
 console.log('JSON read is runned!');
 const xhr = new XMLHttpRequest()
 
