@@ -24,6 +24,7 @@ function updateData() {
                     document.getElementById('company').innerHTML = game.developer;
 					document.getElementById('rating').innerHTML = "50/"+game.rating;
                     document.getElementById('description').innerHTML = game.description;
+					document.getElementById('appid').innerHTML = game.id;
                     
                     document.getElementById('screen1').src = game.screen1;
                     document.getElementById('screen2').src = game.screen2;
