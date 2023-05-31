@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        .profile-form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-field {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-actions {
+            text-align: center;
+        }
+
+        .form-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #4CAF50;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-actions button.cancel {
+            background-color: #ccc;
+        }
+
+        .form-actions button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var user = JSON.parse(localStorage.getItem('user'));
+
+            if (user && user.name) {
+                var profileNameInput = document.getElementById('profile-name');
+                var profilePasswordInput = document.getElementById('profile-password');
+                var profileavatarInput = document.getElementById('profile-avatar');
+
+                profileNameInput.value = user.name;
+                profilePasswordInput.value = user.password;
+                profileavatarInput.value = user.avatar;
+            }
+        });
+
+        function saveChanges() {
+            var user = JSON.parse(localStorage.getItem('user'));
+
+            if (user && user.name) {
+                var profileNameInput = document.getElementById('profile-name');
+                var profilePasswordInput = document.getElementById('profile-password');
+                var profileavatarInput = document.getElementById('profile-avatar');
+
+                user.name = profileNameInput.value;
+                user.password = profilePasswordInput.value;
+                user.avatar = profileavatarInput.value;
+
+                // Отправка обновленных данных на сервер
+                fetch('https://6455f3055f9a4f2361374d32.mockapi.io/prefiles/' + user.id, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(user),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    localStorage.setItem('user', JSON.stringify(user));
+                    alert('The changes have been successfully made!');
+                    // Можно выполнить перенаправление на другую страницу или выполнить другие действия
+                })
+                .catch(error => {
+                    console.error('Error send package:', error);
+                });
+            }
+        }
+
+        function cancelChanges() {
+            var frame = window.parent.frames['Main'];
+			frame.location.href = 'text2.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="profile-form">
+        <div class="form-field">
+            <label for="profile-name" class="form-label">Name:</label>
+            <input type="text" id="profile-name" class="form-input">
+        </div>
+        <div class="form-field">
+            <label for="profile-password" class="form-label">Password:</label>
+            <input type="text" id="profile-password" class="form-input">
+        </div>
+        <div class="form-field">
+            <label for="profile-avatar" class="form-label">Icon (URL):</label>
+            <input type="text" id="profile-avatar" class="form-input">
+        </div>
+        <div class="form-actions">
+            <button onclick="saveChanges()">Apply</button>
+            <button onclick="cancelChanges()">Cancel</button>
+        </div>
+    </div>
+</body>
+</html>
