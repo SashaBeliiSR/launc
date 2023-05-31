@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<link rel="stylesheet" href="style\main.css">
+    <style>
+        .profile-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .profile-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .profile-email {
+            font-style: italic;
+            color: blue;
+            text-decoration: underline;
+        }
+        .profile-status {
+            font-style: italic;
+        }
+    </style>
+    <script>
+        function searchProfiles() {
+            var input = document.getElementById('search-input');
+            var filter = input.value.toUpperCase();
+            var profilesContainer = document.getElementById('profiles-container');
+            var profiles = profilesContainer.getElementsByClassName('profile-container');
+            
+            for (var i = 0; i < profiles.length; i++) {
+                var nameElement = profiles[i].getElementsByClassName('profile-name')[0];
+                var name = nameElement.textContent || nameElement.innerText;
+                
+                if (name.toUpperCase().indexOf(filter) > -1) {
+                    profiles[i].style.display = "";
+                } else {
+                    profiles[i].style.display = "none";
+                }
+            }
+        }
+        
+        function fetchProfiles() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var profiles = JSON.parse(this.responseText);
+                    var profilesContainer = document.getElementById('profiles-container');
+                    
+                    profiles.forEach(function(profile) {
+                        var profileContainer = document.createElement('div');
+                        profileContainer.className = 'profile-container';
+                        
+                        var profileAvatar = document.createElement('img');
+                        profileAvatar.className = 'profile-avatar';
+                        profileAvatar.src = profile.avatar;
+                        
+                        var profileInfo = document.createElement('div');
+                        profileInfo.className = 'profile-info';
+                        
+                        var profileName = document.createElement('div');
+                        profileName.className = 'profile-name';
+                        profileName.innerHTML = profile.name;
+                        
+                        var profileEmail = document.createElement('div');
+                        profileEmail.className = 'profile-email';
+                        profileEmail.innerHTML = 'Email: ' + profile.email;
+                        profileEmail.onclick = function() {
+                            window.location.href = 'mailto:' + profile.email;
+                        };
+                        
+                        var profileStatus = document.createElement('div');
+                        profileStatus.className = 'profile-status';
+                        profileStatus.innerHTML = 'Статус: ' + profile.status;
+                        
+                        profileInfo.appendChild(profileName);
+                        profileInfo.appendChild(profileEmail);
+                        profileInfo.appendChild(profileStatus);
+                        
+                        profileContainer.appendChild(profileAvatar);
+                        profileContainer.appendChild(profileInfo);
+                        
+                        profileContainer.addEventListener('click', function() {
+                            window.location.href = 'profile.html?id=' + profile.id;
+                        });
+                        
+                        profilesContainer.appendChild(profileContainer);
+                    });
+                }
+            };
+            xhttp.open("GET", "https://6455f3055f9a4f2361374d32.mockapi.io/prefiles", true);
+            xhttp.send();
+        }
+    </script>
+</head>
+<body onload="fetchProfiles()">
+	<a href="searchgame.html"><font face="Arial" size="6">Games</font></a><a href="searchprofiles.html"><font face="Arial" size="6">Profiles</font></a><br>
+    
+    <input type="text" id="search-input" placeholder="Enter user name" onkeyup="searchProfiles()">
+    
+    <div id="profiles-container"></div>
+</body>
+</html>

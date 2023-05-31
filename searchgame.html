@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<link rel="stylesheet" href="style\main.css">
+    <style>
+        .game-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .game-icon {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        .game-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .game-developer {
+            font-style: italic;
+        }
+    </style>
+    <script>
+        function searchGames() {
+            var input = document.getElementById('search-input');
+            var filter = input.value.toUpperCase();
+            var gamesContainer = document.getElementById('games-container');
+            var games = gamesContainer.getElementsByClassName('game-container');
+            
+            for (var i = 0; i < games.length; i++) {
+                var titleElement = games[i].getElementsByClassName('game-title')[0];
+                var title = titleElement.textContent || titleElement.innerText;
+                
+                if (title.toUpperCase().indexOf(filter) > -1) {
+                    games[i].style.display = "";
+                } else {
+                    games[i].style.display = "none";
+                }
+            }
+        }
+        
+        function fetchGames() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var games = JSON.parse(this.responseText);
+                    var gamesContainer = document.getElementById('games-container');
+                    
+                    games.forEach(function(game) {
+                        var gameContainer = document.createElement('div');
+                        gameContainer.className = 'game-container';
+                        gameContainer.onclick = function() {
+                            window.location.href = 'game.html?id=' + game.id;
+                        };
+                        
+                        var gameIcon = document.createElement('img');
+                        gameIcon.className = 'game-icon';
+                        gameIcon.src = game.icon;
+                        
+                        var gameInfo = document.createElement('div');
+                        
+                        var gameTitle = document.createElement('div');
+                        gameTitle.className = 'game-title';
+                        gameTitle.innerHTML = game.title;
+                        
+                        var gameDeveloper = document.createElement('div');
+                        gameDeveloper.className = 'game-developer';
+                        gameDeveloper.innerHTML = 'Developer: ' + game.developer;
+                        
+                        gameInfo.appendChild(gameTitle);
+                        gameInfo.appendChild(gameDeveloper);
+                        
+                        gameContainer.appendChild(gameIcon);
+                        gameContainer.appendChild(gameInfo);
+                        
+                        gamesContainer.appendChild(gameContainer);
+                    });
+                }
+            };
+            xhttp.open("GET", "https://6455f3055f9a4f2361374d32.mockapi.io/games", true);
+            xhttp.send();
+        }
+    </script>
+</head>
+<body onload="fetchGames()">
+    <a href="searchgame.html"><font face="Arial" size="6">Games</font><a href="searchprofiles.html"><font face="Arial" size="6">Profiles</font></a><br>
+    
+    <input type="text" id="search-input" placeholder="Enter game title" onkeyup="searchGames()">
+    
+    <div id="games-container"></div>
+</body>
+</html>
