@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+    <style>
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-container h2 {
+            text-align: center;
+        }
+        .form-field {
+            margin-bottom: 15px;
+        }
+        .form-field label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-field input {
+            width: 100%;
+            padding: 5px;
+            font-size: 16px;
+        }
+        .form-field button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+		
+		body {
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function registerUser() {
+            var nameInput = document.getElementById('name');
+            var emailInput = document.getElementById('email');
+            var passwordInput = document.getElementById('password');
+            var avatarInput = document.getElementById('avatar');
+            
+            var name = nameInput.value;
+            var email = emailInput.value;
+            var password = passwordInput.value;
+            var avatar = avatarInput.value;
+            
+            if (name && email && password && avatar) {
+                var newUser = {
+                    name: name,
+                    email: email,
+                    password: password,
+                    avatar: avatar
+                };
+                
+                // Save user data to local storage
+                localStorage.setItem('user', JSON.stringify(newUser));
+                
+                // Save user data to server
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4) {
+                        if (this.status == 201) {
+                            alert('Регистрация прошла успешно!');
+                            nameInput.value = '';
+                            emailInput.value = '';
+                            passwordInput.value = '';
+                            avatarInput.value = '';
+                        } else {
+                            alert('Ошибка при регистрации. Пожалуйста, попробуйте еще раз.');
+                        }
+                    }
+                };
+                xhttp.open("POST", "https://6455f3055f9a4f2361374d32.mockapi.io/prefiles", true);
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.send(JSON.stringify(newUser));
+            } else {
+                alert('Пожалуйста, заполните все поля формы.');
+            }
+        }
+        
+        // Load saved user data from local storage
+        function loadUserData() {
+            var userData = localStorage.getItem('user');
+            
+            if (userData) {
+                var user = JSON.parse(userData);
+                document.getElementById('name').value = user.name;
+                document.getElementById('email').value = user.email;
+                document.getElementById('password').value = user.password;
+                document.getElementById('avatar').value = user.avatar;
+            }
+        }
+        
+        // Clear saved user data from local storage
+        function clearUserData() {
+            localStorage.removeItem('user');
+        }
+    </script>
+</head>
+<body onload="loadUserData()">
+    <div class="form-container">
+        <h2>Registration</h2>
+        <div class="form-field">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+        </div>
+        <div class="form-field">
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+        </div>
+        <div class="form-field">
+            <label for="password">Password:</label>
+            <input type="password" id="password" required>
+        </div>
+        <div class="form-field">
+            <label for="avatar">Icon:</label>
+            <input type="text" id="avatar" required>
+        </div>
+        <div class="form-field">
+            <button onclick="registerUser()">Registration</button>
+        </div>
+        <!--<div class="form-field">
+            <button onclick="clearUserData()">Очистить данные пользователя</button>
+        </div>-->
+		<font face="Arial" color="black">Have an account?   </font><a target="Main" href="loginin.html"><font face="Arial" color="black">Login in</font></a>
+    </div>
+</body>
+</html>
