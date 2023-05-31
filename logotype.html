@@ -1,9 +1,125 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-	</head>
-	<body bgcolor="#ffffff" height="75">
-		<!-- <div align="right"><a target="Main" style="text-decoration: none;" href="https://docs.google.com/forms/d/e/1FAIpQLSfZj1f4t0mrIUGbY1WBwi3rjYekUPPFnjmRryD1HYoVO5769Q/viewform?embedded=true"><font face="Arial" size="14" color="black">Profile</font></a></div>-->
-	</body>
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+	<link rel="stylesheet" href="style\main.css">
+    <style>
+        .profile-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 10px;
+            background-color: #f2f2f2;
+        }
+        .profile-info {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+        }
+        .profile-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .profile-name {
+            font-size: 14px;
+        }
+        .profile-dropdown {
+            position: relative;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 5px);
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 120px;
+            padding: 5px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        }
+        .dropdown-content a {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            text-decoration: none;
+            color: #333;
+        }
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+        .dropdown-button {
+            padding: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+        }
+        .dropdown-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+    </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var user = JSON.parse(localStorage.getItem('user'));
+
+        if (user && user.name) {
+            var profileName = document.getElementById('profile-name');
+            var profileAvatar = document.getElementById('profile-avatar');
+
+            profileName.textContent = user.name;
+
+            // Запрос на сервер для получения иконки пользователя
+            fetch('https://6455f3055f9a4f2361374d32.mockapi.io/prefiles')
+                .then(response => response.json())
+                .then(data => {
+                    var currentUser = data.find(item => item.name === user.name);
+                    if (currentUser && currentUser.avatar) {
+                        profileAvatar.src = currentUser.avatar;
+                        document.getElementById('profile-container').style.display = 'flex';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error send package:', error);
+                });
+        }
+    });
+
+    function toggleDropdown() {
+        var dropdownContent = document.getElementById('dropdown-content');
+        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function openSettings() {
+        var frame = window.parent.frames['Main'];
+        frame.location.href = 'settings.html';
+    }
+
+    function logout() {
+        localStorage.removeItem('user');
+        // Redirect to logout page
+        // window.location.href = 'logout.html';
+    }
+    </script>
+</head>
+<body>
+    <div class="profile-container">
+	<a target="Main" href="loginin.html"><font face="Arial" color="black">Login in</font></a>
+	
+        <div class="profile-info">
+            <img id="profile-avatar" class="profile-avatar" src="" alt="User Avatar">
+            <span id="profile-name" class="profile-name"></span>
+        </div>
+        <div class="profile-dropdown">
+            <button class="dropdown-button" onclick="toggleDropdown()">&#9662;</button>
+            <div id="dropdown-content" class="dropdown-content">
+                <a href="#" onclick="openSettings()"><img class="dropdown-icon" src="photo/settings.png" alt="Настройки">Settings</a>
+                <a href="#" onclick="logout()"><img class="dropdown-icon" src="photo/back.png" alt="Выход">Login out</a>
+            </div>
+        </div>
+    </div>
+</body>
 </html>
