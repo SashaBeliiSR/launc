@@ -1,10 +1,85 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-	</head>
-	<body bgcolor="#ffffff">
-		<font face="Arial" size="6">Coming soon...</font>
-		<br><img src="photo\html.png" height="70"><img src="photo\company.png" height="70">
-	</body>
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <style>
+        /* Стили формы профиля */
+        #profile-form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+
+        #profile-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        #profile-form p {
+            margin: 0;
+            padding: 5px 0;
+        }
+
+        #profile-avatar {
+            max-width: 200px;
+            max-height: 200px;
+            margin-bottom: 10px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var profileId = urlParams.get('id');
+
+            if (profileId) {
+                fetch('https://6455f3055f9a4f2361374d32.mockapi.io/prefiles/' + profileId)
+                    .then(response => response.json())
+                    .then(data => {
+                        fillProfileForm(data);
+                    })
+                    .catch(error => {
+                        console.error('Error receiving profile data:', error);
+                    });
+            }
+        });
+
+        function fillProfileForm(profileData) {
+            var avatarImg = document.getElementById('profile-avatar');
+            var nameText = document.getElementById('profile-name');
+            var statusText = document.getElementById('profile-status');
+            var emailText = document.getElementById('profile-email');
+            var idText = document.getElementById('profile-id');
+
+            avatarImg.src = profileData.avatar || '';
+            nameText.textContent = profileData.name || '';
+            statusText.textContent = profileData.status || '';
+            emailText.textContent = profileData.email || '';
+            idText.textContent = profileData.id || '';
+        }
+    </script>
+</head>
+<body>
+    <div id="profile-form">
+        <label for="profile-avatar">Avatar:</label>
+        <img id="profile-avatar" src="" alt="Аватар пользователя">
+
+        <label for="profile-name">User name:</label>
+        <p id="profile-name"></p>
+
+        <label for="profile-status">Status:</label>
+        <p id="profile-status"></p>
+
+        <label for="profile-email">Email:</label>
+        <p id="profile-email"></p>
+
+        <label for="profile-id">Id:</label>
+        <p id="profile-id"></p>
+    </div>
+</body>
 </html>
