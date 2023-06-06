@@ -3,14 +3,25 @@
 	<head>
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="style\main.css">
+		<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var createUserButton = document.getElementById("createUserButton");
+            var user = localStorage.getItem("user");
+
+            if (!user) {
+                createUserButton.remove();
+            }
+        });
+    </script>
 	</head>
 	<body>
 		<font face="Arial" size="8" color="black">Launc</font>
 		<font face="Arial" size="5" color="black">2023-2023</font>
 		<a target="Main" href="text2.html" style="text-decoration: none;"><center><img src="photo\button1.png" width="31" height="31" border="0" alt="Панель управления" title="Панель управления" align="left"><font face="Arial" size="6" color="black">Home</font></img></center></a><br>
-		<!-- <a target="Main" href="avatar.html" style="text-decoration: none;"><center><img src="photo\button2.png" width="31" height="31" border="0" alt="Панель управления" title="Панель управления" align="left"><font face="Arial" size="6" color="black">Market</font></img></center></a><br> -->
+		<a target="Main" href="text3.html" style="text-decoration: none;"><center><img src="photo\soft.png" width="31" height="31" border="0" alt="Панель управления" title="Панель управления" align="left"><font face="Arial" size="6" color="black">Softwr</font></img></center></a><br>
+		<a target="Main" href="text4.html" style="text-decoration: none;"><center><img src="photo\button2.png" width="31" height="31" border="0" alt="Панель управления" title="Панель управления" align="left"><font face="Arial" size="6" color="black">Market</font></img></center></a><br>
 		<a target="Main" href="searchgame.html" style="text-decoration: none;"><center><img src="photo\search.png" width="31" height="31" border="0" alt="Панель управления" title="Панель управления" align="left"><font face="Arial" size="6" color="black">Search</font></img></center></a><br>
-		<a target="Main" href="create.html" style="text-decoration: none;"><center><img src="photo\button3.png" width="31" height="31" border="0" alt="Панель управления" title="Панель управления" align="left"><font face="Arial" size="6" color="black">Create</font></img></center></a><br>
+		<a target="Main" href="create.html" id="createUserButton" style="text-decoration: none;"><center><img src="photo\button3.png" width="31" height="31" border="0" alt="Панель управления" title="Панель управления" align="left"><font face="Arial" size="6" color="black">Create</font></img></center></a><br>
 		<!-- <a target="Main" href="https://forms.yandex.ru/u/640c2d43e010db0af0f3f0d8/" style="text-decoration: none;"><center><img src="photo\user.png" width="31" height="31" border="0" alt="Панель управления" title="Панель управления" align="left"><font face="Arial" size="6" color="black">Profile</font></img></center></a><br> -->
 		<a target="Main" href="lencension.html" style="text-decoration: none;"><center><img src="photo\button4.png" width="31" height="31" border="0" alt="Панель управления" title="Панель управления" align="left"><font face="Arial" size="6" color="black">Help</font></img></center></a><br>
 		<map name="panel1">
