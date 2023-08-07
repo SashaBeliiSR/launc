@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Buy</title>
+    <style>
+        .content {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<center>
+    <font face="Arial" size="16" color="#308FF5">Final buy page</font><br>
+	<font face="Arial" size="5" color="#47F530">Info: Launcs don't come right away.</font>
+    
+    <div class="content" id="content-1">
+        <script src="https://yastatic.net/s3/frontend/forms/_/embed.js"></script><iframe src="https://forms.yandex.com/u/64d0e71c068ff0b57569575f/?iframe=1" frameborder="0" name="ya-form-64d0e71c068ff0b57569575f" width="650"></iframe>
+    </div>
+    
+    <div class="content" id="content-2">
+        <script src="https://yastatic.net/s3/frontend/forms/_/embed.js"></script><iframe src="https://forms.yandex.com/u/64d0e9bdeb6146b617a90e00/?iframe=1" frameborder="0" name="ya-form-64d0e9bdeb6146b617a90e00" width="650"></iframe>
+    </div>
+    
+    <div class="content" id="content-3">
+        <script src="https://yastatic.net/s3/frontend/forms/_/embed.js"></script><iframe src="https://forms.yandex.com/u/64d0ea93c09c02b745987532/?iframe=1" frameborder="0" name="ya-form-64d0ea93c09c02b745987532" width="650"></iframe>
+    </div>
+    
+    <div class="content" id="content-4">
+        <script src="https://yastatic.net/s3/frontend/forms/_/embed.js"></script><iframe src="https://forms.yandex.com/u/64d0eb08068ff0b6f3695757/?iframe=1" frameborder="0" name="ya-form-64d0eb08068ff0b6f3695757" width="650"></iframe>
+    </div>
+</center>
+    <script>
+        // Получаем значение параметра "type" из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('type');
+        
+        // Отображаем контент в зависимости от типа покупки
+        function displayContent() {
+            const contentDivs = document.querySelectorAll('.content');
+            
+            contentDivs.forEach(div => {
+                div.style.display = 'none';
+            });
+            
+            const selectedContent = document.getElementById(`content-${type}`);
+            
+            if (selectedContent) {
+                selectedContent.style.display = 'block';
+            }
+        }
+        
+        // Вызываем функцию для отображения контента
+        displayContent();
+    </script>
+</body>
+</html>

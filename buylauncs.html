@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Покупка Launcs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 20px;
+        }
+
+        .purchase-container {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .purchase-item {
+            border: 1px solid #e9ecef;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        .purchase-item:hover {
+            cursor: pointer;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Покупка Launcs</h1>
+            <p>Игровая валюта за настоящую</p>
+        </div>
+        <div class="purchase-container">
+            <div class="purchase-item" onclick="redirectToFinalBuy(100)">
+                <h3>1. 1,14$ - 100 лаунчей</h3>
+            </div>
+            <div class="purchase-item" onclick="redirectToFinalBuy(150)">
+                <h3>2. 3,42$ - 150 лаунчей</h3>
+            </div>
+            <div class="purchase-item" onclick="redirectToFinalBuy(210)">
+                <h3>3. 5,70$ - 210 лаунчей</h3>
+            </div>
+            <div class="purchase-item" onclick="redirectToFinalBuy(420)">
+                <h3>4. 10$ - 420 лаунчей</h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to get user ID from the API based on the user name
+        function fetchUserId(userName) {
+            const apiUrl = `https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/prefiles?search=${userName}`;
+            return fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        return data[0].id;
+                    } else {
+                        // Handle user not found scenario
+                        throw new Error('User not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user data:', error);
+                    // Handle error here (e.g., display an error message)
+                });
+        }
+
+        // Function to redirect to the final buy page with the selected amount and user ID
+        function redirectToFinalBuy(amount) {
+            const userName = localStorage.getItem('user');
+            fetchUserId(userName)
+                .then(userId => {
+                    const link = `finalbuy.html?account=${userId}&type=${amount}`;
+                    window.location.href = link;
+                })
+                .catch(error => {
+                    console.error('User not found:', error);
+                    // Handle user not found scenario
+                    alert('User not found');
+                });
+        }
+    </script>
+</body>
+</html>
