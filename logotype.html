@@ -7,14 +7,13 @@
         .profile-container {
             display: flex;
             align-items: center;
-            justify-content: flex-end;
             padding: 10px;
             background-color: #f2f2f2;
         }
         .profile-info {
             display: flex;
             align-items: center;
-            margin-left: 10px;
+            margin-left: auto;
         }
         .profile-avatar {
             width: 30px;
@@ -24,6 +23,28 @@
         }
         .profile-name {
             font-size: 14px;
+        }
+        .profile-balance {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            border-radius: 5px;
+            background-color: #ffffff;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .balance-icon {
+            width: 37px;
+            height: 37px;
+            margin-right: 5px;
+            filter: none;
+        }
+        .profile-balance:hover .balance-icon {
+            filter: grayscale(100%);
+        }
+        .balance-text {
+            font-size: 14px;
+			font-face: Arial;
         }
         .profile-dropdown {
             position: relative;
@@ -68,6 +89,8 @@
         if (user && user.name) {
             var profileName = document.getElementById('profile-name');
             var profileAvatar = document.getElementById('profile-avatar');
+            var profileBalance = document.getElementById('profile-balance');
+            var balanceText = document.getElementById('balance-text');
 
             profileName.textContent = user.name;
 
@@ -82,7 +105,24 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Error send package:', error);
+                    console.error('Error fetching user avatar:', error);
+                });
+
+            // Запрос на сервер для получения баланса пользователя
+            fetch('https://6455f3055f9a4f2361374d32.mockapi.io/prefiles')
+                .then(response => response.json())
+                .then(data => {
+                    var currentUser = data.find(item => item.name === user.name);
+                    if (currentUser && currentUser.balance) {
+                        var balance = currentUser.balance;
+                        balanceText.textContent = balance;
+                        profileBalance.addEventListener('click', function() {
+                            window.parent.frames['Main'].location.href = 'buylauncs.html';
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user balance:', error);
                 });
         }
     });
@@ -106,8 +146,10 @@
 </head>
 <body>
     <div class="profile-container">
-	<a target="Main" href="loginin.html"><font face="Arial" color="black">Login in</font></a>
-	
+        <div class="profile-balance" id="profile-balance">
+            <img class="balance-icon" src="photo/money.png" alt="Money">
+            <span id="balance-text" class="balance-text"></span>
+        </div>
         <div class="profile-info">
             <img id="profile-avatar" class="profile-avatar" src="" alt="User Avatar">
             <span id="profile-name" class="profile-name"></span>
