@@ -91,6 +91,7 @@
             var profileAvatar = document.getElementById('profile-avatar');
             var profileBalance = document.getElementById('profile-balance');
             var balanceText = document.getElementById('balance-text');
+			var profileId = document.getElementById('profileId');
 
             profileName.textContent = user.name;
 
@@ -101,6 +102,7 @@
                     var currentUser = data.find(item => item.name === user.name);
                     if (currentUser && currentUser.avatar) {
                         profileAvatar.src = currentUser.avatar;
+						profileId.textContent = ' Id: ' + currentUser.id; // Добавлено
                         document.getElementById('profile-container').style.display = 'flex';
                     }
                 })
@@ -153,6 +155,7 @@
         <div class="profile-info">
             <img id="profile-avatar" class="profile-avatar" src="" alt="User Avatar">
             <span id="profile-name" class="profile-name"></span>
+			<span id="profileId" class="profile-id"></span> <!-- Добавлено -->
         </div>
         <div class="profile-dropdown">
             <button class="dropdown-button" onclick="toggleDropdown()">&#9662;</button>

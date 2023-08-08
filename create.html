@@ -55,22 +55,53 @@
         .form-actions button:hover {
             background-color: #45a049;
         }
+		.tab {
+            overflow: hidden;
+            background-color: #f1f1f1;
+        }
+
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: background-color 0.3s;
+        }
+
+        .tab button:hover {
+            background-color: #ddd;
+        }
+
+        .tab button.active {
+            background-color: #ccc;
+        }
+
+        /* Стили для содержимого вкладок */
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
     </style>
     <script>
         function addGame() {
-            var title = document.getElementById('game-title').value;
-			var developer = document.getElementById('game-developer').value;
-			var version = document.getElementById('game-version').value;
-			var icon = document.getElementById('game-icon').value;
-			var screen1 = document.getElementById('game-screen1').value;
-			var screen2 = document.getElementById('game-screen2').value;
-			var screen3 = document.getElementById('game-screen3').value;
-			var description = document.getElementById('game-description').value;
-			var dateCreated = new Date().toISOString().slice(0, 10);
-			var url = document.getElementById('game-url').value;
+    var title = document.getElementById('game-title').value;
+    var userJSON = localStorage.getItem('user');
+    var user = JSON.parse(userJSON);
+    var developer = user.name;
+    var version = document.getElementById('game-version').value;
+    var icon = document.getElementById('game-icon').value;
+    var screen1 = document.getElementById('game-screen1').value;
+    var screen2 = document.getElementById('game-screen2').value;
+    var screen3 = document.getElementById('game-screen3').value;
+    var description = document.getElementById('game-description').value;
+    var dateCreated = new Date().toISOString().slice(0, 10);
+    var url = document.getElementById('game-url').value;
 
     // Проверка на заполнение всех полей
-    if (!title || !developer || !version || !icon || !screen1 || !description || !url) {
+    if (!title || !version || !icon || !screen1 || !description || !url) {
         alert('Please fill in all the fields of the form.');
         return;
     }
@@ -85,78 +116,283 @@
         screen3: screen3,
         description: description,
         dateCreated: dateCreated,
-        url: url
+        url: url,
+        rating: 0
     };
 
+    // Send gameData to the server using AJAX or fetch API
+    // Example using fetch API:
+    fetch("https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/games", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(gameData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle the response from the server
+        console.log('Game added:', data);
+        // Reset the form fields
+        document.getElementById('game-form').reset();
+        // Show a success message or redirect to another page
+        alert('Game added successfully!');
+    })
+    .catch(error => {
+        // Handle any errors that occurred during the request
+        console.error('Error adding game:', error);
+        // Show an error message
+        alert('An error occurred while adding the game. Please try again later.');
+    });
+}
 
-            // Send gameData to the server using AJAX or fetch API
-            // Example using fetch API:
-            fetch('https://6455f3055f9a4f2361374d32.mockapi.io/games', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(gameData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response from the server
-                console.log('Game added:', data);
-                // Reset the form fields
-                document.getElementById('game-form').reset();
-                // Show a success message or redirect to another page
-                alert('Game added successfully!');
-            })
-            .catch(error => {
-                // Handle any errors that occurred during the request
-                console.error('Error adding game:', error);
-                // Show an error message
-                alert('An error occurred while adding the game. Please try again later.');
-            });
-        }
+function addSoftware() {
+    var title = document.getElementById('soft-title').value;
+    var userJSON = localStorage.getItem('user');
+    var user = JSON.parse(userJSON);
+    var developer = user.name;
+    var version = document.getElementById('soft-version').value;
+    var icon = document.getElementById('soft-icon').value;
+    var screen1 = document.getElementById('soft-screen1').value;
+    var screen2 = document.getElementById('soft-screen2').value;
+    var screen3 = document.getElementById('soft-screen3').value;
+    var description = document.getElementById('soft-description').value;
+    var dateCreated = new Date().toISOString().slice(0, 10);
+    var url = document.getElementById('soft-url').value;
+
+    // Проверка на заполнение всех полей
+    if (!title || !developer || !version || !icon || !screen1 || !description || !url) {
+        alert('Please fill in all the fields of the form.');
+        return;
+    }
+
+    var softwareData = {
+        title: title,
+        developer: developer,
+        version: version,
+        icon: icon,
+        screen1: screen1,
+        screen2: screen2,
+        screen3: screen3,
+        description: description,
+        dateCreated: dateCreated,
+        url: url,
+        rating: 0
+    };
+
+    // Send softwareData to the server using AJAX or fetch API
+    // Example using fetch API:
+    fetch("https://647f2f10c246f166da904909.mockapi.io/api/v1/softwares", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(softwareData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle the response from the server
+        console.log('Software added:', data);
+        // Reset the form fields
+        document.getElementById('software-form').reset();
+        // Show a success message or redirect to another page
+        alert('Software added successfully!');
+    })
+    .catch(error => {
+        // Handle any errors that occurred during the request
+        console.error('Error adding software:', error);
+        // Show an error message
+        alert('An error occurred while adding the software. Please try again later.');
+    });
+}
+
+
+function addGamePass() {
+    var title = document.getElementById('pass-title').value;
+    var icon = document.getElementById('pass-icon').value;
+    var userJSON = localStorage.getItem('user');
+    var user = JSON.parse(userJSON);
+    var developer = user.name;
+    var price = document.getElementById('pass-price').value;
+    var description = document.getElementById('pass-description').value;
+    var screen = document.getElementById('pass-screen').value;
+
+    // Проверка на заполнение всех полей
+    if (!title || !icon || !developer || !price || !description || !screen) {
+        alert('Please fill in all the fields of the form.');
+        return;
+    }
+
+    var passData = {
+        title: title,
+        icon: icon,
+        developer: developer,
+        price: price,
+        description: description,
+        screen: screen,
+        rating: 0
+    };
+
+    // Send passData to the server using AJAX or fetch API
+    // Example using fetch API:
+    fetch("https://647f2f10c246f166da904909.mockapi.io/api/v1/marketplace", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(passData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle the response from the server
+        console.log('Game pass added:', data);
+        // Reset the form fields
+        document.getElementById('pass-form').reset();
+        // Show a success message or redirect to another page
+        alert('Game pass added successfully!');
+    })
+    .catch(error => {
+        // Handle any errors that occurred during the request
+        console.error('Error adding game pass:', error);
+        // Show an error message
+        alert('An error occurred while adding the game pass. Please try again later.');
+    });
+}
+
     </script>
 </head>
 <body>
-    <form id="game-form" class="game-form">
-        <div class="form-field">
-            <label for="game-title" class="form-label">Game title:</label>
-            <input type="text" id="game-title" class="form-input" required>
-        </div>
-        <div class="form-field">
-            <label for="game-developer" class="form-label">Developer:</label>
-            <input type="text" id="game-developer" class="form-input" required>
-        </div>
-        <div class="form-field">
-            <label for="game-version" class="form-label">Version:</label>
-            <input type="text" id="game-version" class="form-input" required>
-        </div>
-        <div class="form-field">
-            <label for="game-icon" class="form-label">Icon (URL):</label>
-            <input type="text" id="game-icon" class="form-input" required>
-        </div>
-        <div class="form-field">
-            <label for="game-screen1" class="form-label">Screenshot 1 (URL):</label>
-            <input type="text" id="game-screen1" class="form-input" required>
-        </div>
-        <div class="form-field">
-            <label for="game-screen2" class="form-label">Screenshot 2 (URL):</label>
-            <input type="text" id="game-screen2" class="form-input">
-        </div>
-        <div class="form-field">
-            <label for="game-screen3" class="form-label">Screenshot 3 (URL):</label>
-            <input type="text" id="game-screen3" class="form-input">
-        </div>
-        <div class="form-field">
-            <label for="game-description" class="form-label">Description:</label>
-            <textarea id="game-description" class="form-input" required></textarea>
-        </div>
-        <div class="form-field">
-            <label for="game-url" class="form-label">Game file (URL):</label>
-            <input type="text" id="game-url" class="form-input" required>
-        </div>
-        <div class="form-actions">
-            <button type="button" onclick="addGame()">Add a game</button>
-        </div>
-    </form>
+    <div class="tab">
+        <button class="tablink" onclick="openTab('game-tab', this)">Game</button>
+        <button class="tablink" onclick="openTab('soft-tab', this)">Soft</button>
+        <button class="tablink" onclick="openTab('pass-tab', this)">Pass</button>
+    </div>
+
+    <div id="game-tab" class="tabcontent">
+        <form id="game-form" class="game-form">
+            <div class="form-field">
+                <label for="game-title" class="form-label">Game title:</label>
+                <input type="text" id="game-title" class="form-input" required>
+            </div>
+            <div class="form-field">
+                <label for="game-version" class="form-label">Version:</label>
+                <input type="text" id="game-version" class="form-input" required>
+            </div>
+            <div class="form-field">
+                <label for="game-icon" class="form-label">Icon (URL):</label>
+                <input type="text" id="game-icon" class="form-input" required>
+            </div>
+            <div class="form-field">
+                <label for="game-screen1" class="form-label">Screenshot 1 (URL):</label>
+                <input type="text" id="game-screen1" class="form-input" required>
+            </div>
+            <div class="form-field">
+                <label for="game-screen2" class="form-label">Screenshot 2 (URL):</label>
+                <input type="text" id="game-screen2" class="form-input">
+            </div>
+            <div class="form-field">
+                <label for="game-screen3" class="form-label">Screenshot 3 (URL):</label>
+                <input type="text" id="game-screen3" class="form-input">
+            </div>
+            <div class="form-field">
+                <label for="game-description" class="form-label">Description:</label>
+                <textarea id="game-description" class="form-input" required></textarea>
+            </div>
+            <div class="form-field">
+                <label for="game-url" class="form-label">Game file (URL):</label>
+                <input type="text" id="game-url" class="form-input" required>
+            </div>
+            <div class="form-actions">
+                <button type="button" onclick="addGame()">Add a game</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="soft-tab" class="tabcontent">
+        <form id="software-form" class="game-form">
+            <div class="form-field">
+                <label for="soft-title" class="form-label">Software title:</label>
+                <input type="text" id="soft-title" class="form-input" required>
+            </div>
+            <div class="form-field">
+                <label for="soft-version" class="form-label">Version:</label>
+                <input type="text" id="soft-version" class="form-input" required>
+            </div>
+            <div class="form-field">
+                <label for="soft-icon" class="form-label">Icon (URL):</label>
+                <input type="text" id="soft-icon" class="form-input" required>
+            </div>
+            <div class="form-field">
+                <label for="soft-screen1" class="form-label">Screenshot 1 (URL):</label>
+                <input type="text" id="soft-screen1" class="form-input" required>
+            </div>
+            <div class="form-field">
+                <label for="soft-screen2" class="form-label">Screenshot 2 (URL):</label>
+                <input type="text" id="soft-screen2" class="form-input">
+            </div>
+            <div class="form-field">
+                <label for="soft-screen3" class="form-label">Screenshot 3 (URL):</label>
+                <input type="text" id="soft-screen3" class="form-input">
+            </div>
+            <div class="form-field">
+                <label for="soft-description" class="form-label">Description:</label>
+                <textarea id="soft-description" class="form-input" required></textarea>
+            </div>
+            <div class="form-field">
+                <label for="soft-url" class="form-label">Software file (URL):</label>
+                <input type="text" id="soft-url" class="form-input" required>
+            </div>
+            <div class="form-actions">
+                <button type="button" onclick="addSoftware()">Add software</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="pass-tab" class="tabcontent">
+        <form id="pass-form" class="game-form">
+            <div class="form-field">
+                <label for="pass-title" class="form-label">Pass title:</label>
+                <input type="text" id="pass-title" class="form-input" required>
+            </div>
+            <div class="form-field">
+                <label for="pass-icon" class="form-label">Icon (URL):</label>
+                <input type="text" id="pass-icon" class="form-input" required>
+            </div>
+            <div class="form-field">
+                <label for="pass-price" class="form-label">Price:</label>
+                <input type="text" id="pass-price" class="form-input" required>
+            </div>
+            <div class="form-field">
+                <label for="pass-description" class="form-label">Description:</label>
+                <textarea id="pass-description" class="form-input" required></textarea>
+            </div>
+            <div class="form-field">
+                <label for="pass-screen" class="form-label">Screenshot (URL):</label>
+                <input type="text" id="pass-screen" class="form-input" required>
+            </div>
+            <div class="form-actions">
+                <button type="button" onclick="addGamePass()">Add game pass</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function openTab(tabId, button) {
+            var tabcontents = document.getElementsByClassName('tabcontent');
+            for (var i = 0; i < tabcontents.length; i++) {
+                tabcontents[i].style.display = 'none';
+            }
+
+            var tablinks = document.getElementsByClassName('tablink');
+            for (var i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove('active');
+            }
+
+            document.getElementById(tabId).style.display = 'block';
+            button.classList.add('active');
+        }
+
+        openTab('game-tab', document.getElementsByClassName('tablink')[0]);
+    </script>
 </body>
 </html>
