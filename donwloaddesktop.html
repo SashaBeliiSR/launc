@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Download Launc</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        
+        .container {
+            margin: 50px;
+        }
+
+        .download-button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .download-button:hover {
+            background-color: #0056b3;
+        }
+
+        .description {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+		.dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme font {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme a {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme div {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme input {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme textarea {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme button {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme img {
+            filter: brightness(0) invert(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Download Launc for Windows</h1>
+		<img src="photo/size.png" height="64"><img src="photo/like.png" height="64">
+        <p>Welcome! You can download the latest version of Launc for Windows and enjoy its functionality.</p>
+
+        <p class="description">Launc is a download store for games and programs.</p>
+		<p class="description">Join our team!</p>
+
+        <p>To download Launc for Windows, click on the button below:</p>
+        <a class="download-button" href="setup.exe" download>Donwload for Windows</a>
+		<p>x64, x32</p>
+		<br><br>
+		<p>Downloading Launc on android is not possible right now....</p>
+		<p>in development...</p>
+		<a class="download-button" href="" download>Donwload for Android</a>
+		<p>5.0 +</p>
+    </div>
+	<script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
+</body>
+</html>

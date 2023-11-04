@@ -11,7 +11,8 @@
             margin: 10px;
         }
         .game-icon {
-            border: 5px solid black;
+            /* border: 5px solid black; */
+            border-radius: 25px;
             width: 150px;
             height: 150px;
             cursor: pointer;
@@ -22,44 +23,133 @@
             margin-top: 10px;
             cursor: pointer;
         }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        select {
+            font-size: 16px;
+            padding: 5px;
+        }
+		.dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme font {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme a {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme div {
+            background-color: #333;
+            color: #fff;
+        }
     </style>
     <script>
+        var gamesData; // Данные об играх
+
         function fetchGames() {
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
-                    var games = JSON.parse(this.responseText);
-                    var gamesContainer = document.getElementById('games-container');
-                    
-                    games.forEach(function(game) {
-                        var gameContainer = document.createElement('div');
-                        gameContainer.className = 'game-container';
-                        
-                        var gameLink = document.createElement('a');
-                        gameLink.href = 'soft.html?id=' + game.id;
-                        
-                        var gameIcon = document.createElement('img');
-                        gameIcon.className = 'game-icon';
-                        gameIcon.src = game.icon;
-                        
-                        var gameTitle = document.createElement('div');
-                        gameTitle.className = 'game-title';
-                        gameTitle.innerHTML = game.title;
-                        
-                        gameLink.appendChild(gameIcon);
-                        gameLink.appendChild(gameTitle);
-                        gameContainer.appendChild(gameLink);
-                        
-                        gamesContainer.appendChild(gameContainer);
-                    });
+                    gamesData = JSON.parse(this.responseText);
+                    renderGames(gamesData); // Отображаем игры после загрузки
                 }
             };
             xhttp.open("GET", "https://647f2f10c246f166da904909.mockapi.io/api/v1/softwares", true);
             xhttp.send();
         }
+
+        function renderGames(games) {
+            var gamesContainer = document.getElementById('games-container');
+            gamesContainer.innerHTML = '';
+
+            games.forEach(function(game) {
+                var gameContainer = document.createElement('div');
+                gameContainer.className = 'game-container';
+
+                var gameLink = document.createElement('a');
+                gameLink.href = 'soft.html?id=' + game.id;
+
+                var gameIcon = document.createElement('img');
+                gameIcon.className = 'game-icon';
+                gameIcon.src = game.icon;
+                gameIcon.onerror = function() {
+                    this.src = 'nophoto.png';
+                };
+
+                var gameTitle = document.createElement('div');
+                gameTitle.className = 'game-title';
+                gameTitle.innerHTML = game.title;
+
+                gameLink.appendChild(gameIcon);
+                gameLink.appendChild(gameTitle);
+                gameContainer.appendChild(gameLink);
+
+                gamesContainer.appendChild(gameContainer);
+            });
+        }
+
+        // Обработчик изменения в выпадающем списке
+        function sortGames() {
+            var select = document.getElementById('sort-select');
+            var selectedOption = select.options[select.selectedIndex].value;
+
+            if (selectedOption === 'ratingDown') {
+                // Сортировка по рейтингу по убыванию
+                gamesData.sort(function(a, b) {
+                    return b.rating - a.rating;
+                });
+            } else if (selectedOption === 'ratingUp') {
+                // Сортировка по рейтингу по возрастанию
+                gamesData.sort(function(a, b) {
+                    return a.rating - b.rating;
+                });
+            } else if (selectedOption === 'priceDown') {
+                // Сортировка по цене по убыванию
+                gamesData.sort(function(a, b) {
+                    return b.price - a.price;
+                });
+            } else if (selectedOption === 'priceUp') {
+                // Сортировка по цене по возрастанию
+                gamesData.sort(function(a, b) {
+                    return a.price - b.price;
+                });
+            } else if (selectedOption === 'new') {
+                // Сортировка по новизне (может потребоваться дополнительное поле с датой)
+                gamesData.sort(function(a, b) {
+                    return new Date(b.releaseDate) - new Date(a.releaseDate);
+                });
+            } else if (selectedOption === 'old') {
+                // Сортировка по давности (может потребоваться дополнительное поле с датой)
+                gamesData.sort(function(a, b) {
+                    return new Date(a.releaseDate) - new Date(b.releaseDate);
+                });
+            }
+
+            renderGames(gamesData); // Перерисовываем список игр после сортировки
+        }
     </script>
 </head>
 <body onload="fetchGames()">
+    <select id="sort-select" onchange="sortGames()">
+        <option value="ratingDown">Rating Down</option>
+        <option value="ratingUp">Rating Up</option>
+        <option value="priceDown">Price Down</option>
+        <option value="priceUp">Price Up</option>
+        <!--<option value="new">New</option>
+        <option value="old">Old</option>-->
+    </select>
     <div id="games-container"></div>
+	<script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
 </body>
 </html>

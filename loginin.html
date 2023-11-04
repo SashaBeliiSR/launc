@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Login in</title>
+	<script type="text/javascript" src="games\translate.js"></script>
     <style>
         body {
-            background-color: #f2f2f2;
+			background: linear-gradient(to bottom right, #FF6B6B, #FF8E53);
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
@@ -27,6 +28,7 @@
 
         form {
             margin-top: 20px;
+			background-color: #f2f2f2;
         }
 
         label {
@@ -64,15 +66,26 @@
         }
     </style>
     <script>
+	// Функция для хэширования пароля
+        function hashPassword(password) {
+            // В реальных условиях использования, вам следует использовать библиотеку для более безопасного хэширования.
+            var hashedPassword = btoa(password); // Это упрощенное хэширование для примера.
+
+            return hashedPassword;
+        }
+	
     function login() {
         var username = document.getElementById('username').value;
         var password = document.getElementById('password').value;
+		
+		// Хэшируйте введенный пароль
+        var hashedPassword = hashPassword(password);
 
         // Отправка запроса на сервер
         fetch('https://6455f3055f9a4f2361374d32.mockapi.io/prefiles')
             .then(response => response.json())
             .then(data => {
-                var user = data.find(item => item.name === username && item.password === password);
+                var user = data.find(item => item.name === username && item.password === hashedPassword);
                 if (user) {
                     // Сохранение пользователя в локальное хранилище
                     localStorage.setItem('user', JSON.stringify(user));
@@ -95,13 +108,13 @@
     <div class="container">
         <h1>Login in</h1>
         <form>
-            <label for="username">User name:</label>
+            <label for="username" id="t1">User name:</label>
             <input type="text" id="username" name="username" required><br><br>
-            <label for="password">Password:</label>
+            <label for="password" id="t2">Password:</label>
             <input type="password" id="password" name="password" required><br><br>
             <input type="button" value="Join" onclick="login()">
             <p id="error-message" class="error-message"></p>
-			<font face="Arial" color="black">No account?   </font><a target="Main" href="registration.html"><font face="Arial" color="black">Sing up</font></a>
+			<font face="Arial" color="black" id="t3">No account?   </font><a target="Main" href="registration.html"><font face="Arial" color="black" id="t4">Sing up</font></a>
         </form>
     </div>
 </body>

@@ -59,6 +59,25 @@
         .form-actions button:hover {
             background-color: #45a049;
         }
+		.dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme font {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme a {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme div {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme img {
+            filter: brightness(0) invert(1);
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -76,41 +95,114 @@
         });
 
         function saveChanges() {
-            var user = JSON.parse(localStorage.getItem('user'));
+    var user = JSON.parse(localStorage.getItem('user'));
 
-            if (user && user.name) {
-                var profileNameInput = document.getElementById('profile-name');
-                var profilePasswordInput = document.getElementById('profile-password');
-                var profileavatarInput = document.getElementById('profile-avatar');
+    if (user && user.name) {
+        var profileNameInput = document.getElementById('profile-name');
+        var profilePasswordInput = document.getElementById('profile-password');
+        var profileavatarInput = document.getElementById('profile-avatar');
+        var profileEmailInput = document.getElementById('profile-email');
 
-                user.name = profileNameInput.value;
-                user.password = profilePasswordInput.value;
-                user.avatar = profileavatarInput.value;
-
-                // Отправка обновленных данных на сервер
-                fetch('https://6455f3055f9a4f2361374d32.mockapi.io/prefiles/' + user.id, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(user),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    localStorage.setItem('user', JSON.stringify(user));
-                    alert('The changes have been successfully made!');
-                    // Можно выполнить перенаправление на другую страницу или выполнить другие действия
-                })
-                .catch(error => {
-                    console.error('Error send package:', error);
+        var updatedName = profileNameInput.value;
+        
+        if (updatedName !== user.name) {
+            // Проверьте уникальность имени только если имя было изменено
+            checkNameUniqueness(updatedName)
+                .then(isUnique => {
+                    if (!isUnique) {
+                        alert('This name is already in use. Please choose a different name.');
+                    } else {
+                        user.name = updatedName;
+                        user.password = profilePasswordInput.value;
+                        user.avatar = profileavatarInput.value;
+                        user.email = profileEmailInput.value;
+        
+                        // Отправка обновленных данных на сервер
+                        fetch('https://6455f3055f9a4f2361374d32.mockapi.io/prefiles/' + user.id, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(user),
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            localStorage.setItem('user', JSON.stringify(user));
+                            alert('The changes have been successfully made!');
+                            // Можно выполнить перенаправление на другую страницу или выполнить другие действия
+                        })
+                        .catch(error => {
+                            console.error('Error send package:', error);
+                        });
+                    }
                 });
-            }
+        } else {
+            // Если имя не было изменено, продолжайте без проверки
+            user.password = profilePasswordInput.value;
+            user.avatar = profileavatarInput.value;
+            user.email = profileEmailInput.value;
+
+            // Отправка обновленных данных на сервер
+            fetch('https://6455f3055f9a4f2361374d32.mockapi.io/prefiles/' + user.id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),
+            })
+            .then(response => response.json())
+            .then(data => {
+                localStorage.setItem('user', JSON.stringify(user));
+                alert('The changes have been successfully made!');
+				top.location.href = 'index.html';
+                // Можно выполнить перенаправление на другую страницу или выполнить другие действия
+            })
+            .catch(error => {
+                console.error('Error send package:', error);
+            });
         }
+    }
+}
+
+
+
 
         function cancelChanges() {
             var frame = window.parent.frames['Main'];
-			frame.location.href = 'text2.html';
+			frame.location.href = 'home.html';
         }
+		
+		function checkEmailUniqueness(email) {
+    // Отправьте запрос на сервер для проверки уникальности email
+    var apiUrl = 'https://6455f3055f9a4f2361374d32.mockapi.io/prefiles?search=' + email;
+
+    return fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            return data.length === 0; // Если массив пустой, email уникален
+        })
+        .catch(error => {
+            console.error('Error checking email uniqueness:', error);
+            return false;
+        });
+}
+
+function checkNameUniqueness(name) {
+    // Отправьте запрос на сервер для проверки уникальности имени
+    var apiUrl = 'https://6455f3055f9a4f2361374d32.mockapi.io/prefiles?search=' + name;
+
+    return fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            return data.length === 0; // Если массив пустой, имя уникально
+        })
+        .catch(error => {
+            console.error('Error checking name uniqueness:', error);
+            return false;
+        });
+}
+
+
     </script>
 </head>
 <body>
@@ -119,6 +211,11 @@
             <label for="profile-name" class="form-label">Name:</label>
             <input type="text" id="profile-name" class="form-input">
         </div>
+		<div class="form-field">
+			<label for="profile-email" class="form-label">Email:</label>
+			<input type="email" id="profile-email" class="form-input">
+		</div>
+
         <div class="form-field">
             <label for="profile-password" class="form-label">Password:</label>
             <input type="text" id="profile-password" class="form-input">
@@ -127,10 +224,47 @@
             <label for="profile-avatar" class="form-label">Icon (URL):</label>
             <input type="text" id="profile-avatar" class="form-input">
         </div>
+		<h2>Choose a theme:</h2>
+		<label for="lightTheme">Light</label>
+		<input type="radio" id="lightTheme" name="theme" value="light"><br>
+		<label for="darkTheme">Dark</label>
+		<input type="radio" id="darkTheme" name="theme" value="dark">
+		<button id="saveThemeButton">Save theme</button>
         <div class="form-actions">
             <button onclick="saveChanges()">Apply</button>
             <button onclick="cancelChanges()">Cancel</button>
         </div>
     </div>
+	<script>
+        const lightThemeRadio = document.getElementById('lightTheme');
+        const darkThemeRadio = document.getElementById('darkTheme');
+        const saveThemeButton = document.getElementById('saveThemeButton');
+
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            darkThemeRadio.checked = true;
+        } else {
+            lightThemeRadio.checked = true;
+        }
+
+        // Обработчик кнопки "Сохранить"
+        saveThemeButton.addEventListener('click', function() {
+            if (darkThemeRadio.checked) {
+                document.body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+	<script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
 </body>
 </html>

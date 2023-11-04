@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Стили для списка продуктов и отображения продукта */
+        #inventory {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        #product-list {
+            width: 30%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            max-height: 600px;
+        }
+
+        #product-details {
+            flex: 1;
+            border: 1px solid #ccc;
+            padding: 300px;
+			position: relative; /* Позиция относительно родительского элемента */
+        }
+
+        .product-item {
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .product-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        #product-icon {
+			border-radius: 25px;
+            width: 64px;
+            height: 64px;
+            margin-right: 10px;
+        }
+
+        #product-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #product-id {
+            margin-top: 5px;
+        }
+
+        #product-frame {
+            width: 100%; /* iframe занимает 100% ширины родительского элемента */
+            height: 100%; /* iframe занимает 100% высоты родительского элемента */
+            position: absolute; /* Позиция относительно родительского элемента */
+            top: 0; /* Прижимаем iframe к верхней границе родительского элемента */
+            left: 0; /* Прижимаем iframe к левой границе родительского элемента */
+            border: none;
+        }
+
+        #filter-buttons {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .filter-button {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+		.dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme font {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme a {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme div {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="filter-buttons">
+        <label class="filter-button">
+            <input type="checkbox" id="filter-game"> Games
+        </label>
+        <label class="filter-button">
+            <input type="checkbox" id="filter-software"> Software
+        </label>
+        <label class="filter-button">
+            <input type="checkbox" id="filter-pass"> Pass
+        </label>
+    </div>
+    <div id="inventory">
+        <div id="product-list">
+            <font face="Arial" size="5">Your Library</font>
+            <ul id="product-items">
+                <!-- Сюда будет динамически добавляться список продуктов -->
+            </ul>
+        </div>
+        <div id="product-details">
+            <div id="product-icon"></div>
+            <div id="product-title"></div>
+            <div id="product-id"></div>
+            <iframe id="product-frame"></iframe>
+        </div>
+    </div>
+
+    <script>
+		// Шаг 1: Получить имя пользователя из localStorage
+	var user = localStorage.getItem('user');
+	if (user) {
+		var userName = JSON.parse(user).name;
+
+		// Шаг 2: Сделать GET-запрос к серверу, чтобы получить данные игрока по имени
+		var apiUrl = 'https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/prefiles?search=' + userName;
+
+		fetch(apiUrl)
+			.then(response => response.json())
+			.then(data => {
+				if (data.length > 0) {
+					// Шаг 3: Обновить данные в localStorage данными игрока
+					localStorage.setItem('user', JSON.stringify(data[0]));
+					console.log('Данные игрока обновлены в localStorage.');
+				} else {
+					console.log('Игрок с именем ' + userName + ' не найден.');
+				}
+			})
+			.catch(error => {
+				console.error('Ошибка при выполнении GET-запроса:', error);
+			});
+	} else {
+		console.log('Имя пользователя не найдено в localStorage.');
+	}
+	
+	
+	// Получение имени пользователя из localStorage
+var user = localStorage.getItem('user');
+
+// Если пользователя нет в localStorage, перенаправляем на страницу регистрации
+if (!user) {
+    //top.location.href = 'https://sashabeliisr.github.io/launc/';
+} else {
+    // Пробуем найти пользователя на сервере
+    var userName = JSON.parse(user).name;
+    var userFound = false;
+    var userBanInfo = "";
+
+    // Запрос к серверу для поиска пользователя
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var prefiles = JSON.parse(this.responseText);
+            for (var i = 0; i < prefiles.length; i++) {
+                if (prefiles[i].name === userName) {
+                    userFound = true;
+                    if (prefiles[i].Banned) {
+                        // Перенаправляем на страницу banned.html
+                        top.location.href = 'banned.html';
+                    }
+                    break;
+                }
+            }
+            if (!userFound) {
+                userBanInfo = "<p>Пользователь не найден</p>";
+            }
+            document.getElementById('ban-info').innerHTML = userBanInfo;
+        }
+    };
+    xhttp.open("GET", "https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/prefiles", true);
+    xhttp.send();
+}
+
+	
+	
+	var user = localStorage.getItem('user');
+
+        // Если пользователя нет в localStorage, перенаправляем на страницу регистрации
+        if (!user) {
+            window.location.href = 'registration.html';
+        }
+		
+		
+		var hasLaunched = false; // Флаг для отслеживания выполнения функции
+
+		function LauncDesktopCheck() {
+			// Если функция была выполнена, устанавливаем флаг в true
+			hasLaunched = true;
+
+			// Ваш код для confirm
+			//var result = confirm("УРА!!!");
+
+			// Если confirm выполнен и вернул значение, то устанавливаем флаг в true
+			//if (result) {
+			//    hasLaunched = true;
+			//}
+		}
+
+		// Проверяем флаг после 1 секунды
+		setTimeout(function() {
+			if (!hasLaunched) {
+				//window.location.href = 'donwloaddesktop.html'; // Переход на download.html
+			}
+		}, 1000); // 1000 миллисекунд = 1 секунда
+
+
+        // Функция для обновления данных об игроке на сервере
+        function updatePlayerData(userId, userData) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log('Player data updated on the server.');
+                }
+            };
+            xhttp.open("PUT", "https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/prefiles/" + userId, true);
+            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhttp.send(JSON.stringify(userData));
+        }
+
+        // Функция для загрузки данных о продуктах с сервера
+        function loadProducts() {
+            var user = localStorage.getItem('user');
+            if (!user) {
+                alert('Please log in to view your inventory.');
+                return;
+            }
+
+            var userObj = JSON.parse(user);
+            var userName = userObj.name;
+
+            // Определение текущего игрока по имени на сервере
+            var getPlayerUrl = "https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/prefiles?name=" + userName;
+
+            var getPlayerRequest = new XMLHttpRequest();
+            getPlayerRequest.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var players = JSON.parse(this.responseText);
+                    if (players.length > 0) {
+                        var playerId = players[0].id;
+                        
+                        // Загрузка инвентаря игрока
+                        var inventory = userObj.inventory || [];
+                        var productList = document.getElementById('product-items');
+
+                        inventory.forEach(function (item) {
+                            var productType = item.slice(-1); // Последний символ определяет тип продукта (g, s, p)
+                            var productId = item.slice(0, -2); // Идентификатор продукта без типа
+
+                            // Получение данных о продукте с сервера в зависимости от типа
+                            var productUrl = "";
+                            switch (productType) {
+                                case 'g':
+                                    productUrl = "https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/games/" + productId;
+                                    break;
+                                case 's':
+                                    productUrl = "https://647f2f10c246f166da904909.mockapi.io/api/v1/softwares/" + productId;
+                                    break;
+                                case 'p':
+                                    productUrl = "https://647f2f10c246f166da904909.mockapi.io/api/v1/marketplace/" + productId;
+                                    break;
+                                default:
+                                    console.error("Unknown product type: " + productType);
+                                    return;
+                            }
+
+                            var productRequest = new XMLHttpRequest();
+                            productRequest.onreadystatechange = function () {
+                                if (this.readyState == 4 && this.status == 200) {
+                                    var product = JSON.parse(this.responseText);
+
+                                    // Создание элемента продукта и добавление его в список
+                                    var productItem = document.createElement('li');
+                                    productItem.classList.add('product-item');
+                                    productItem.setAttribute('data-product-type', productType);
+                                    productItem.setAttribute('data-product-id', productId);
+
+                                    var productIcon = document.createElement('img');
+                                    productIcon.src = product.icon;
+                                    productIcon.alt = product.title;
+                                    productIcon.id = 'product-icon';
+									productIcon.onerror = function() {
+										this.src = 'nophoto.png';
+									};
+
+                                    var productTitle = document.createElement('div');
+                                    productTitle.textContent = product.title;
+                                    productTitle.id = 'product-title';
+
+                                    var productIdDiv = document.createElement('div');
+                                    productIdDiv.textContent = "ID: " + productId;
+                                    productIdDiv.id = 'product-id';
+
+                                    productItem.appendChild(productIcon);
+                                    productItem.appendChild(productTitle);
+                                    productItem.appendChild(productIdDiv);
+
+                                    productItem.addEventListener('click', showProductDetails);
+
+                                    productList.appendChild(productItem);
+                                }
+                            };
+
+                            productRequest.open("GET", productUrl, true);
+                            productRequest.send();
+                        });
+                    }
+                }
+            };
+
+            getPlayerRequest.open("GET", getPlayerUrl, true);
+            getPlayerRequest.send();
+        }
+
+        // Функция для отображения деталей выбранного продукта
+        function showProductDetails(event) {
+            var productType = event.currentTarget.getAttribute('data-product-type');
+            var productId = event.currentTarget.getAttribute('data-product-id');
+            var productUrl = "";
+
+            // Получение данных о продукте с сервера в зависимости от типа
+            switch (productType) {
+                case 'g':
+                    productUrl = "https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/games/" + productId;
+                    break;
+                case 's':
+                    productUrl = "https://647f2f10c246f166da904909.mockapi.io/api/v1/softwares/" + productId;
+                    break;
+                case 'p':
+                    productUrl = "https://647f2f10c246f166da904909.mockapi.io/api/v1/marketplace/" + productId;
+                    break;
+                default:
+                    console.error("Unknown product type: " + productType);
+                    return;
+            }
+
+            var productDetailsRequest = new XMLHttpRequest();
+            productDetailsRequest.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var product = JSON.parse(this.responseText);
+
+                    // Отображение деталей продукта
+                    document.getElementById('product-title').textContent = product.title;
+                    document.getElementById('product-id').textContent = "ID: " + productId;
+                    document.getElementById('product-icon').src = product.icon;
+					if(productType == "g"){
+                    document.getElementById('product-frame').src = "game.html?id=" + product.id;
+					}
+					if(productType == "s"){
+                    document.getElementById('product-frame').src = "soft.html?id=" + product.id;
+					}
+					if(productType == "p"){
+                    document.getElementById('product-frame').src = "pass.html?id=" + product.id;
+					}
+                }
+            };
+
+            productDetailsRequest.open("GET", productUrl, true);
+            productDetailsRequest.send();
+        }
+
+        // Функция для управления видимостью продуктов
+        function toggleProductVisibility(type) {
+            var productList = document.getElementById('product-items');
+            var products = productList.getElementsByClassName('product-item');
+
+            for (var i = 0; i < products.length; i++) {
+                var product = products[i];
+                var productType = product.getAttribute('data-product-type');
+
+                if (type === productType || type === '') {
+                    product.style.display = 'flex';
+                } else {
+                    product.style.display = 'none';
+                }
+            }
+        }
+
+        // Загрузка данных о продуктах при загрузке страницы
+        window.onload = function () {
+            loadProducts();
+
+            // Добавляем обработчики для фильтров
+            document.getElementById('filter-game').addEventListener('change', function () {
+                if (this.checked) {
+                    toggleProductVisibility('g');
+                } else {
+                    toggleProductVisibility('');
+                }
+            });
+
+            document.getElementById('filter-software').addEventListener('change', function () {
+                if (this.checked) {
+                    toggleProductVisibility('s');
+                } else {
+                    toggleProductVisibility('');
+                }
+            });
+
+            document.getElementById('filter-pass').addEventListener('change', function () {
+                if (this.checked) {
+                    toggleProductVisibility('p');
+                } else {
+                    toggleProductVisibility('');
+                }
+            });
+        };
+    </script>
+	<script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
+</body>
+</html>

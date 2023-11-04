@@ -6,6 +6,11 @@
 		<link rel="icon" href="photo\icon.ico" type="image/x-icon">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
 	</head>
+	<script>
+		if (window.parent.frames.length > 0) {
+			window.stop();
+		}
+	</script>
 	<frameset cols="150,*" border="0">
 <!--предупреждение-->
 		<noframes> Извините, но ваш браузер не поддерживает фреймы. Если хотите увидеть информацию об этом сайте то вам нужно зайти в настройки вашего браузера и включить видить фрэймы. </noframes>
@@ -13,7 +18,7 @@
 		<frame src="menu.html" scrolling="no" marginwidth="0" marginheight="0" noresize>
 		<frameset rows="110,*">
 			<frame src="logotype.html" scrolling="no" marginwidth="0" marginheight="0" noresize>
-			<frame src="text2.html" scrolling="yes" marginwidth="0" marginheight="0" noresize name="Main">
+			<frame src="home.html" scrolling="yes" marginwidth="0" marginheight="0" noresize name="Main">
 		</frameset>
 	</frameset>
 </html>

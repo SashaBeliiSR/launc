@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление игры</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        .game-form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-field {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-actions {
+            text-align: center;
+        }
+
+        .form-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #4CAF50;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-actions button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        function addGame() {
+            var title = document.getElementById('game-title').value;
+			var developer = document.getElementById('game-developer').value;
+			var version = document.getElementById('game-version').value;
+			var icon = document.getElementById('game-icon').value;
+			var screen1 = document.getElementById('game-screen1').value;
+			var screen2 = document.getElementById('game-screen2').value;
+			var screen3 = document.getElementById('game-screen3').value;
+			var description = document.getElementById('game-description').value;
+			var dateCreated = new Date().toISOString().slice(0, 10);
+			var url = document.getElementById('game-url').value;
+
+    // Проверка на заполнение всех полей
+    if (!title || !developer || !version || !icon || !screen1 || !description || !url) {
+        alert('Please fill in all the fields of the form.');
+        return;
+    }
+
+    var gameData = {
+        title: title,
+        developer: developer,
+        version: version,
+        icon: icon,
+        screen1: screen1,
+        screen2: screen2,
+        screen3: screen3,
+        description: description,
+        dateCreated: dateCreated,
+        url: url
+    };
+
+
+            // Send gameData to the server using AJAX or fetch API
+            // Example using fetch API:
+            fetch('https://6455f3055f9a4f2361374d32.mockapi.io/games', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(gameData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response from the server
+                console.log('Game added:', data);
+                // Reset the form fields
+                document.getElementById('game-form').reset();
+                // Show a success message or redirect to another page
+                alert('Game added successfully!');
+            })
+            .catch(error => {
+                // Handle any errors that occurred during the request
+                console.error('Error adding game:', error);
+                // Show an error message
+                alert('An error occurred while adding the game. Please try again later.');
+            });
+        }
+    </script>
+</head>
+<body>
+    <form id="game-form" class="game-form">
+        <div class="form-field">
+            <label for="game-title" class="form-label">Game title:</label>
+            <input type="text" id="game-title" class="form-input" required>
+        </div>
+        <div class="form-field">
+            <label for="game-developer" class="form-label">Developer:</label>
+            <input type="text" id="game-developer" class="form-input" required>
+        </div>
+        <div class="form-field">
+            <label for="game-version" class="form-label">Version:</label>
+            <input type="text" id="game-version" class="form-input" required>
+        </div>
+        <div class="form-field">
+            <label for="game-icon" class="form-label">Icon (URL):</label>
+            <input type="text" id="game-icon" class="form-input" required>
+        </div>
+        <div class="form-field">
+            <label for="game-screen1" class="form-label">Screenshot 1 (URL):</label>
+            <input type="text" id="game-screen1" class="form-input" required>
+        </div>
+        <div class="form-field">
+            <label for="game-screen2" class="form-label">Screenshot 2 (URL):</label>
+            <input type="text" id="game-screen2" class="form-input">
+        </div>
+        <div class="form-field">
+            <label for="game-screen3" class="form-label">Screenshot 3 (URL):</label>
+            <input type="text" id="game-screen3" class="form-input">
+        </div>
+        <div class="form-field">
+            <label for="game-description" class="form-label">Description:</label>
+            <textarea id="game-description" class="form-input" required></textarea>
+        </div>
+        <div class="form-field">
+            <label for="game-url" class="form-label">Game file (URL):</label>
+            <input type="text" id="game-url" class="form-input" required>
+        </div>
+        <div class="form-actions">
+            <button type="button" onclick="addGame()">Add a game</button>
+        </div>
+    </form>
+</body>
+</html>

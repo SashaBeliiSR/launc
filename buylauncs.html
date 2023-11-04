@@ -36,6 +36,22 @@
             cursor: pointer;
             background-color: #f8f9fa;
         }
+		.dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme font {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme a {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme div {
+            background-color: #333;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -49,13 +65,13 @@
                 <h3>1. 1,14$ - 100 launcs</h3>
             </div></a>
             <a href="https://forms.yandex.com/u/64d0e9bdeb6146b617a90e00/" target="_top"><div class="purchase-item" onclick="redirectToFinalBuy(150)">
-                <h3>2. 3,42$ - 150 launcs</h3>
+                <h3>2. 1,50$ - 150 launcs</h3>
             </div></a>
             <a href="https://forms.yandex.com/u/64d0ea93c09c02b745987532/" target="_top"><div class="purchase-item" onclick="redirectToFinalBuy(210)">
-                <h3>3. 5,70$ - 210 launcs</h3>
+                <h3>3. 1,99$ - 210 launcs</h3>
             </div></a>
             <a href="https://forms.yandex.com/u/64d0eb08068ff0b6f3695757/" target="_top"><div class="purchase-item" onclick="redirectToFinalBuy(420)">
-                <h3>4. 10$ - 420 launcs</h3>
+                <h3>4. 3,99$ - 450 launcs</h3>
             </div></a>
         </div>
     </div>
@@ -95,5 +111,12 @@
                 });
         }
     </script>-->
+	<script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
 </body>
 </html>

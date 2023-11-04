@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Блокировка игрока</title>
+    <style>
+        /* Стили для центрирования элементов на странице */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .ban-container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        h1 {
+            color: #e74c3c;
+        }
+        .report-button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="ban-container">
+        <h1>You've been banned!</h1>
+        <div id="ban-info"></div>
+        <button class="report-button" id="report-button">Report</button>
+        <script>
+            // Получение имени пользователя из localStorage
+            var user = localStorage.getItem('user');
+
+            // Если пользователя нет в localStorage, перенаправляем на страницу регистрации
+            if (!user) {
+                top.location.href = 'index.html';
+            } else {
+                // Пробуем найти пользователя на сервере
+                var userName = JSON.parse(user).name;
+                var userFound = false;
+                var userBanInfo = "";
+
+                // Запрос к серверу для поиска пользователя
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var prefiles = JSON.parse(this.responseText);
+                        for (var i = 0; i < prefiles.length; i++) {
+                            if (prefiles[i].name === userName) {
+                                userFound = true;
+                                if (prefiles[i].Banned) {
+                                    userBanInfo = "<p>You're blocked on Launc</p>";
+                                    userBanInfo += "<p><strong>Banned By:</strong> " + prefiles[i].BannedBy + "</p>";
+                                    userBanInfo += "<p><strong>Ban Reason:</strong> " + prefiles[i].BanReason + "</p>";
+                                    userBanInfo += "<p><strong>Ban Time:</strong> " + prefiles[i].BanTime + " days</p>";
+                                } else {
+                                    userBanInfo = "<p>You're not blocked</p>";
+									window.location.href = 'https://sashabeliisr.github.io/launc/';
+                                }
+                                break;
+                            }
+                        }
+                        if (!userFound) {
+                            userBanInfo = "<p>User not found</p>";
+                        }
+                        document.getElementById('ban-info').innerHTML = userBanInfo;
+                    }
+                };
+                xhttp.open("GET", "https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/prefiles", true);
+                xhttp.send();
+            }
+
+            // Обработчик для кнопки "Report"
+            var reportButton = document.getElementById('report-button');
+            reportButton.addEventListener('click', function () {
+                // Здесь можно добавить код для отправки жалобы
+                window.location.href = 'https://forms.yandex.ru/u/6523ec13c769f108a171e07b/';
+            });
+        </script>
+    </div>
+</body>
+</html>

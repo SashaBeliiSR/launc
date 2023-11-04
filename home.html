@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Launc</title>
+    <style>
+        .game-container {
+            display: inline-block;
+            text-align: center;
+            padding: 10px;
+            margin: 10px;
+        }
+        .game-icon {
+            border-radius: 25px;
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+        }
+        .game-title {
+            font-family: Arial;
+            font-size: 30px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+			font-family: "Arial";
+            margin: 10px;
+        }
+		.seeall {
+            font-size: 24px;
+            font-weight: bold;
+			color: blue;
+			font-family: "Arial";
+            margin: 10px;
+        }
+        .show-all-button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            float: right;
+            margin: 10px;
+        }
+		.dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme font {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme a {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme div {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+    <script>
+        function fetchGames() {
+            var user = localStorage.getItem('user');
+            if (user) {
+                var userName = JSON.parse(user).name;
+                var greeting = document.createElement('div');
+                greeting.innerHTML = 'Hello, ' + userName;
+                greeting.className = 'header';
+                document.body.appendChild(greeting);
+            }
+            
+            var gamesContainer = document.createElement('div');
+            gamesContainer.id = 'games-container';
+            document.body.appendChild(gamesContainer);
+            
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var games = JSON.parse(this.responseText);
+                    games.sort(function(a, b) {
+                        return b.rating - a.rating;
+                    });
+                    var visibleGames = games.slice(0, 9);
+                    
+                    // Заголовок для Games
+                    var gamesHeader = document.createElement('div');
+                    gamesHeader.innerHTML = 'Games';
+                    gamesHeader.className = 'header';
+                    gamesContainer.appendChild(gamesHeader);
+					
+					var gamesAll = document.createElement('a');
+                    gamesAll.innerHTML = 'See all';
+                    gamesAll.className = 'seeall';
+					gamesAll.href = 'text2.html';
+                    gamesContainer.appendChild(gamesAll);
+					
+					var brdiv = document.createElement('br');
+					gamesContainer.appendChild(brdiv);
+                    
+                    visibleGames.forEach(function(game) {
+                        var gameContainer = document.createElement('div');
+                        gameContainer.className = 'game-container';
+                        
+                        var gameLink = document.createElement('a');
+                        gameLink.href = 'game.html?id=' + game.id;
+                        
+                        var gameIcon = document.createElement('img');
+                        gameIcon.className = 'game-icon';
+                        gameIcon.src = game.icon;
+                        gameIcon.onerror = function() {
+                            this.src = 'nophoto.png';
+                        };
+                        
+                        var gameTitle = document.createElement('div');
+                        gameTitle.className = 'game-title';
+                        gameTitle.innerHTML = game.title;
+                        
+                        gameLink.appendChild(gameIcon);
+                        gameLink.appendChild(gameTitle);
+                        gameContainer.appendChild(gameLink);
+                        
+                        gamesContainer.appendChild(gameContainer);
+                    });
+                    
+                    // Заголовок и загрузка Software
+                    var softwareHeader = document.createElement('div');
+                    softwareHeader.innerHTML = 'Software';
+                    softwareHeader.className = 'header';
+                    gamesContainer.appendChild(softwareHeader);
+					
+					var softAll = document.createElement('a');
+					softAll.innerHTML = 'See all';
+					softAll.className = 'seeall';
+					softAll.href = 'text3.html';
+					gamesContainer.appendChild(softAll);
+					
+					var brdiv = document.createElement('br');
+					gamesContainer.appendChild(brdiv);
+                    
+                    // Загрузка первых 10 программ
+                    var xhttpSoftware = new XMLHttpRequest();
+                    xhttpSoftware.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            var software = JSON.parse(this.responseText);
+                            var visibleSoftware = software.slice(0, 9);
+                            visibleSoftware.forEach(function(item) {
+                                var softwareContainer = document.createElement('div');
+                                softwareContainer.className = 'game-container';
+                                var softwareLink = document.createElement('a');
+                                softwareLink.href = 'soft.html?id=' + item.id;
+                                
+                                var softwareIcon = document.createElement('img');
+                                softwareIcon.className = 'game-icon';
+                                softwareIcon.src = item.icon;
+                                softwareIcon.onerror = function() {
+                                    this.src = 'nophoto.png';
+                                };
+                                
+                                var softwareTitle = document.createElement('div');
+                                softwareTitle.className = 'game-title';
+                                softwareTitle.innerHTML = item.title;
+                                
+                                softwareLink.appendChild(softwareIcon);
+                                softwareLink.appendChild(softwareTitle);
+                                softwareContainer.appendChild(softwareLink);
+                                
+                                gamesContainer.appendChild(softwareContainer);
+                            });
+                        }
+                    };
+                    xhttpSoftware.open("GET", "https://647f2f10c246f166da904909.mockapi.io/api/v1/softwares", true);
+                    xhttpSoftware.send();
+                    
+                    // Кнопка "Show All"
+                    //var showAllButton = document.createElement('button');
+                    //showAllButton.innerHTML = 'Show All';
+                    //showAllButton.className = 'show-all-button';
+                    showAllButton.onclick = function() {
+                        gamesContainer.innerHTML = ''; // Очистить контейнер
+                        var allGamesHeader = document.createElement('div');
+                        allGamesHeader.innerHTML = 'All Games';
+                        allGamesHeader.className = 'header';
+                        gamesContainer.appendChild(allGamesHeader);
+                        
+                        games.forEach(function(game) {
+                            var gameContainer = document.createElement('div');
+                            gameContainer.className = 'game-container';
+                            
+                            var gameLink = document.createElement('a');
+                            gameLink.href = 'game.html?id=' + game.id;
+                            
+                            var gameIcon = document.createElement('img');
+                            gameIcon.className = 'game-icon';
+                            gameIcon.src = game.icon;
+                            gameIcon.onerror = function() {
+                                this.src = 'nophoto.png';
+                            };
+                            
+                            var gameTitle = document.createElement('div');
+                            gameTitle.className = 'game-title';
+                            gameTitle.innerHTML = game.title;
+                            
+                            gameLink.appendChild(gameIcon);
+                            gameLink.appendChild(gameTitle);
+                            gameContainer.appendChild(gameLink);
+                            
+                            gamesContainer.appendChild(gameContainer);
+                        });
+                        
+                        showAllButton.style.display = 'none'; // Скрыть кнопку после показа всех игр
+                    };
+                    gamesContainer.appendChild(showAllButton);
+                }
+            };
+            xhttp.open("GET", "https://6455f3055f9a4f2361374d32.mockapi.io/games", true);
+            xhttp.send();
+        }
+    </script>
+</head>
+<body onload="fetchGames()">
+<script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
+</body>
+</html>

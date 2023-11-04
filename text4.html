@@ -2,64 +2,153 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Список игр</title>
+    <title>Список продуктов</title>
     <style>
-        .game-container {
+        .product-container {
             display: inline-block;
             text-align: center;
             padding: 10px;
             margin: 10px;
         }
-        .game-icon {
-            border: 5px solid black;
+        .product-icon {
+            border-radius: 25px;
             width: 150px;
             height: 150px;
             cursor: pointer;
         }
-        .game-title {
+        .product-title {
             font-family: Arial;
             font-size: 30px;
             margin-top: 10px;
             cursor: pointer;
         }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        select {
+            font-size: 16px;
+            padding: 5px;
+        }
+		.dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme font {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme a {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme div {
+            background-color: #333;
+            color: #fff;
+        }
     </style>
     <script>
-        function fetchGames() {
+        var productsData; // Данные о продуктах
+
+        function fetchProducts() {
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
-                    var games = JSON.parse(this.responseText);
-                    var gamesContainer = document.getElementById('games-container');
-                    
-                    games.forEach(function(game) {
-                        var gameContainer = document.createElement('div');
-                        gameContainer.className = 'game-container';
-                        
-                        var gameLink = document.createElement('a');
-                        gameLink.href = 'pass.html?id=' + game.id;
-                        
-                        var gameIcon = document.createElement('img');
-                        gameIcon.className = 'game-icon';
-                        gameIcon.src = game.icon;
-                        
-                        var gameTitle = document.createElement('div');
-                        gameTitle.className = 'game-title';
-                        gameTitle.innerHTML = game.title;
-                        
-                        gameLink.appendChild(gameIcon);
-                        gameLink.appendChild(gameTitle);
-                        gameContainer.appendChild(gameLink);
-                        
-                        gamesContainer.appendChild(gameContainer);
-                    });
+                    productsData = JSON.parse(this.responseText);
+                    renderProducts(productsData); // Отображаем продукты после загрузки
                 }
             };
             xhttp.open("GET", "https://647f2f10c246f166da904909.mockapi.io/api/v1/marketplace", true);
             xhttp.send();
         }
+
+        function renderProducts(products) {
+            var productsContainer = document.getElementById('products-container');
+            productsContainer.innerHTML = '';
+
+            products.forEach(function(product) {
+                var productContainer = document.createElement('div');
+                productContainer.className = 'product-container';
+
+                var productLink = document.createElement('a');
+                productLink.href = 'pass.html?id=' + product.id;
+
+                var productIcon = document.createElement('img');
+                productIcon.className = 'product-icon';
+                productIcon.src = product.icon;
+                productIcon.onerror = function() {
+                    this.src = 'nophoto.png';
+                };
+
+                var productTitle = document.createElement('div');
+                productTitle.className = 'product-title';
+                productTitle.innerHTML = product.title;
+
+                productLink.appendChild(productIcon);
+                productLink.appendChild(productTitle);
+                productContainer.appendChild(productLink);
+
+                productsContainer.appendChild(productContainer);
+            });
+        }
+
+        // Обработчик изменения в выпадающем списке
+        function sortProducts() {
+            var select = document.getElementById('sort-select');
+            var selectedOption = select.options[select.selectedIndex].value;
+
+            if (selectedOption === 'ratingDown') {
+                // Сортировка по рейтингу по убыванию
+                productsData.sort(function(a, b) {
+                    return b.rating - a.rating;
+                });
+            } else if (selectedOption === 'ratingUp') {
+                // Сортировка по рейтингу по возрастанию
+                productsData.sort(function(a, b) {
+                    return a.rating - b.rating;
+                });
+            } else if (selectedOption === 'priceDown') {
+                // Сортировка по цене по убыванию
+                productsData.sort(function(a, b) {
+                    return b.price - a.price;
+                });
+            } else if (selectedOption === 'priceUp') {
+                // Сортировка по цене по возрастанию
+                productsData.sort(function(a, b) {
+                    return a.price - b.price;
+                });
+            } else if (selectedOption === 'new') {
+                // Сортировка по новизне (может потребоваться дополнительное поле с датой)
+                productsData.sort(function(a, b) {
+                    return new Date(b.releaseDate) - new Date(a.releaseDate);
+                });
+            } else if (selectedOption === 'old') {
+                // Сортировка по давности (может потребоваться дополнительное поле с датой)
+                productsData.sort(function(a, b) {
+                    return new Date(a.releaseDate) - new Date(b.releaseDate);
+                });
+            }
+
+            renderProducts(productsData); // Перерисовываем список продуктов после сортировки
+        }
     </script>
 </head>
-<body onload="fetchGames()">
-    <div id="games-container"></div>
+<body onload="fetchProducts()">
+    <select id="sort-select" onchange="sortProducts()">
+        <option value="ratingDown">Rating Down</option>
+        <option value="ratingUp">Rating Up</option>
+        <option value="priceDown">Price Down</option>
+        <option value="priceUp">Price Up</option>
+        <!--<option value="new">New</option>
+        <option value="old">Old</option>-->
+    </select>
+    <div id="products-container"></div>
+	<script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
 </body>
 </html>

@@ -81,8 +81,95 @@
             height: 20px;
             margin-right: 5px;
         }
+		.dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme font {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme a {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme div {
+            background-color: #333;
+            color: #fff;
+        }
     </style>
     <script>
+	// Шаг 1: Получить имя пользователя из localStorage
+	var user = localStorage.getItem('user');
+	if (user) {
+		var userName = JSON.parse(user).name;
+
+		// Шаг 2: Сделать GET-запрос к серверу, чтобы получить данные игрока по имени
+		var apiUrl = 'https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/prefiles?search=' + userName;
+
+		fetch(apiUrl)
+			.then(response => response.json())
+			.then(data => {
+				if (data.length > 0) {
+					// Шаг 3: Обновить данные в localStorage данными игрока
+					localStorage.setItem('user', JSON.stringify(data[0]));
+					console.log('Данные игрока обновлены в localStorage.');
+				} else {
+					console.log('Игрок с именем ' + userName + ' не найден.');
+				}
+			})
+			.catch(error => {
+				console.error('Ошибка при выполнении GET-запроса:', error);
+			});
+	} else {
+		console.log('Имя пользователя не найдено в localStorage.');
+	}
+
+
+
+	
+	
+	// Получение имени пользователя из localStorage
+var user = localStorage.getItem('user');
+
+// Если пользователя нет в localStorage, перенаправляем на страницу регистрации
+if (!user) {
+    //top.location.href = 'https://sashabeliisr.github.io/launc/';
+} else {
+    // Пробуем найти пользователя на сервере
+    var userName = JSON.parse(user).name;
+    var userFound = false;
+    var userBanInfo = "";
+
+    // Запрос к серверу для поиска пользователя
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var prefiles = JSON.parse(this.responseText);
+            for (var i = 0; i < prefiles.length; i++) {
+                if (prefiles[i].name === userName) {
+                    userFound = true;
+                    if (prefiles[i].Banned) {
+                        // Перенаправляем на страницу banned.html
+                        top.location.href = 'banned.html';
+                    }
+                    break;
+                }
+            }
+            if (!userFound) {
+                userBanInfo = "<p>Пользователь не найден</p>";
+            }
+            document.getElementById('ban-info').innerHTML = userBanInfo;
+        }
+    };
+    xhttp.open("GET", "https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/prefiles", true);
+    xhttp.send();
+}
+
+
+	
+	
+	
     document.addEventListener('DOMContentLoaded', function() {
         var user = JSON.parse(localStorage.getItem('user'));
 
@@ -148,14 +235,17 @@
 </head>
 <body>
     <div class="profile-container">
+		<a href="buylauncs.html" target="Main">
         <div class="profile-balance" id="profile-balance">
-            <img class="balance-icon" src="photo/money.png" alt="Money">
+            <img class="balance-icon" src="photo/money.png" alt="Money"></a>
             <span id="balance-text" class="balance-text"></span>
         </div>
         <div class="profile-info">
+			<a href="loginin.html" target="Main" style="color: black; font-family: Arial; text-decoration: none;">Login</a><p>ㅤ</p>
             <img id="profile-avatar" class="profile-avatar" src="" alt="User Avatar">
-            <span id="profile-name" class="profile-name"></span>
 			<span id="profileId" class="profile-id"></span> <!-- Добавлено -->
+			<p>ㅤ</p>
+            <span id="profile-name" class="profile-name"></span>
         </div>
         <div class="profile-dropdown">
             <button class="dropdown-button" onclick="toggleDropdown()">&#9662;</button>
@@ -165,5 +255,12 @@
             </div>
         </div>
     </div>
+	<script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
 </body>
 </html>

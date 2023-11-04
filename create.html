@@ -84,10 +84,49 @@
             padding: 20px;
             background-color: #f9f9f9;
         }
+		.dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme font {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme a {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme div {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme input {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme textarea {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme form {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme img {
+            filter: brightness(0) invert(1);
+        }
     </style>
     <script>
+	var user = localStorage.getItem('user');
+
+        // Если пользователя нет в localStorage, перенаправляем на страницу регистрации
+        if (!user) {
+            window.location.href = 'registration.html';
+        }
+		
         function addGame() {
     var title = document.getElementById('game-title').value;
+	var price = document.getElementById('game-price').value;
     var userJSON = localStorage.getItem('user');
     var user = JSON.parse(userJSON);
     var developer = user.name;
@@ -99,15 +138,25 @@
     var description = document.getElementById('game-description').value;
     var dateCreated = new Date().toISOString().slice(0, 10);
     var url = document.getElementById('game-url').value;
+	var video = document.getElementById('game-video').value;
+	var age = document.getElementById('game-age').value;
+	var cpu = document.getElementById('game-cpu').value;
+	var gpu = document.getElementById('game-gpu').value;
+	var ram = document.getElementById('game-ram').value;
+	var os = document.getElementById('game-os').value;
+	var size = document.getElementById('game-size').value;
+	var softreq = document.getElementById('game-soft').value;
+    var indev = document.getElementById('game-indev').value;
 
     // Проверка на заполнение всех полей
-    if (!title || !version || !icon || !screen1 || !description || !url) {
+    if (!title || !price || !version || !icon || !screen1 || !description || !url) {
         alert('Please fill in all the fields of the form.');
         return;
     }
 
     var gameData = {
         title: title,
+		Price: price,
         developer: developer,
         version: version,
         icon: icon,
@@ -116,8 +165,19 @@
         screen3: screen3,
         description: description,
         dateCreated: dateCreated,
+		donwloads: 0,
         url: url,
-        rating: 0
+        rating: 0,
+		size: size,
+		video: video,
+		age: age,
+		rcpu: cpu,
+		rgpu: gpu,
+		rram: ram,
+		ros: os,
+		rsoft: softreq,
+        balance: 0,
+        indev: indev
     };
 
     // Send gameData to the server using AJAX or fetch API
@@ -148,6 +208,7 @@
 
 function addSoftware() {
     var title = document.getElementById('soft-title').value;
+	var price = document.getElementById('soft-price').value;
     var userJSON = localStorage.getItem('user');
     var user = JSON.parse(userJSON);
     var developer = user.name;
@@ -159,15 +220,25 @@ function addSoftware() {
     var description = document.getElementById('soft-description').value;
     var dateCreated = new Date().toISOString().slice(0, 10);
     var url = document.getElementById('soft-url').value;
+	var video = document.getElementById('soft-video').value;
+	var age = document.getElementById('soft-age').value;
+	var cpu = document.getElementById('soft-cpu').value;
+	var gpu = document.getElementById('soft-gpu').value;
+	var ram = document.getElementById('soft-ram').value;
+	var os = document.getElementById('soft-os').value;
+	var size = document.getElementById('soft-size').value;
+	var softreq = document.getElementById('soft-soft').value;
+    var indev = document.getElementById('soft-indev').value;
 
     // Проверка на заполнение всех полей
-    if (!title || !developer || !version || !icon || !screen1 || !description || !url) {
+    if (!title || !price || !developer || !version || !icon || !screen1 || !description || !url) {
         alert('Please fill in all the fields of the form.');
         return;
     }
 
     var softwareData = {
         title: title,
+		Price: price,
         developer: developer,
         version: version,
         icon: icon,
@@ -176,8 +247,19 @@ function addSoftware() {
         screen3: screen3,
         description: description,
         dateCreated: dateCreated,
+		donwloads: 0,
         url: url,
-        rating: 0
+        rating: 0,
+		size: size,
+		video: video,
+		age: age,
+		rcpu: cpu,
+		rgpu: gpu,
+		rram: ram,
+		ros: os,
+		rsoft: softreq,
+        balance: 0,
+        indev: indev
     };
 
     // Send softwareData to the server using AJAX or fetch API
@@ -266,6 +348,7 @@ function addGamePass() {
         <button class="tablink" onclick="openTab('game-tab', this)">Game</button>
         <button class="tablink" onclick="openTab('soft-tab', this)">Soft</button>
         <button class="tablink" onclick="openTab('pass-tab', this)">Pass</button>
+		<a href="studio.html"><button class="tablink">Studio</button></a>
     </div>
 
     <div id="game-tab" class="tabcontent">
@@ -274,9 +357,17 @@ function addGamePass() {
                 <label for="game-title" class="form-label">Game title:</label>
                 <input type="text" id="game-title" class="form-input" required>
             </div>
+			<div class="form-field">
+                <label for="game-price" class="form-label">Price: (commission of 20%)</label>
+                <input type="number" id="game-price" value="0" class="form-input" required>
+            </div>
             <div class="form-field">
                 <label for="game-version" class="form-label">Version:</label>
                 <input type="text" id="game-version" class="form-input" required>
+            </div>
+			<div class="form-field">
+                <label for="game-version" class="form-label">Video: (youtube id)</label>
+                <input type="text" id="game-video" class="form-input" required>
             </div>
             <div class="form-field">
                 <label for="game-icon" class="form-label">Icon (URL):</label>
@@ -298,9 +389,42 @@ function addGamePass() {
                 <label for="game-description" class="form-label">Description:</label>
                 <textarea id="game-description" class="form-input" required></textarea>
             </div>
+			<div class="form-field">
+                <label for="game-version" class="form-label">Age: (example: 3+)</label>
+                <input type="text" id="game-age" class="form-input" value="3+" required>
+            </div>
             <div class="form-field">
-                <label for="game-url" class="form-label">Game file (URL):</label>
+                <label for="game-url" class="form-label">Game file ZIP (URL):</label>
                 <input type="text" id="game-url" class="form-input" required>
+            </div>
+            <div class="form-field">
+                <label for="game-indev" class="form-label">In Dev:</label>
+                <input type="text" id="game-indev" value="false" class="form-input" required>
+            </div>
+			<label align="center" class="form-label">Requirements</label>
+			<div class="form-field">
+                <label for="game-url" class="form-label">CPU:</label>
+                <input type="text" id="game-cpu" value="Intel Core i3" class="form-input" required>
+            </div>
+			<div class="form-field">
+                <label for="game-url" class="form-label">GPU:</label>
+                <input type="text" id="game-gpu" value="Built-in" class="form-input" required>
+            </div>
+			<div class="form-field">
+                <label for="game-url" class="form-label">RAM:</label>
+                <input type="text" id="game-ram" value="2GB" class="form-input" required>
+            </div>
+			<div class="form-field">
+                <label for="game-url" class="form-label">OS:</label>
+                <input type="text" id="game-os" value="Windows" class="form-input" required>
+            </div>
+			<div class="form-field">
+                <label for="game-url" class="form-label">SOFT:</label>
+                <input type="text" id="game-soft" value="None" class="form-input" required>
+            </div>
+			<div class="form-field">
+                <label for="game-url" class="form-label">Size:</label>
+                <input type="text" id="game-size" value="0MB" class="form-input" required>
             </div>
             <div class="form-actions">
                 <button type="button" onclick="addGame()">Add a game</button>
@@ -314,9 +438,17 @@ function addGamePass() {
                 <label for="soft-title" class="form-label">Software title:</label>
                 <input type="text" id="soft-title" class="form-input" required>
             </div>
+			<div class="form-field">
+                <label for="soft-price" class="form-label">Price: (commission of 20%)</label>
+                <input type="number" id="soft-price" value="0" class="form-input" required>
+            </div>
             <div class="form-field">
                 <label for="soft-version" class="form-label">Version:</label>
                 <input type="text" id="soft-version" class="form-input" required>
+            </div>
+			<div class="form-field">
+                <label for="game-version" class="form-label">Video: (youtube id)</label>
+                <input type="text" id="soft-video" class="form-input" required>
             </div>
             <div class="form-field">
                 <label for="soft-icon" class="form-label">Icon (URL):</label>
@@ -338,9 +470,42 @@ function addGamePass() {
                 <label for="soft-description" class="form-label">Description:</label>
                 <textarea id="soft-description" class="form-input" required></textarea>
             </div>
+			<div class="form-field">
+                <label for="game-version" class="form-label">Age: (example: 3+)</label>
+                <input type="text" id="soft-age" class="form-input" value="3+" required>
+            </div>
             <div class="form-field">
-                <label for="soft-url" class="form-label">Software file (URL):</label>
+                <label for="soft-url" class="form-label">Software file ZIP (URL):</label>
                 <input type="text" id="soft-url" class="form-input" required>
+            </div>
+            <div class="form-field">
+                <label for="soft-indev" class="form-label">In Dev:</label>
+                <input type="text" id="soft-indev" value="false" class="form-input" required>
+            </div>
+			<label align="center" class="form-label">Requirements</label>
+			<div class="form-field">
+                <label for="game-url" class="form-label">CPU:</label>
+                <input type="text" id="soft-cpu" value="Intel Core i3" class="form-input" required>
+            </div>
+			<div class="form-field">
+                <label for="game-url" class="form-label">GPU:</label>
+                <input type="text" id="soft-gpu" value="Built-in" class="form-input" required>
+            </div>
+			<div class="form-field">
+                <label for="game-url" class="form-label">RAM:</label>
+                <input type="text" id="soft-ram" value="2GB" class="form-input" required>
+            </div>
+			<div class="form-field">
+                <label for="game-url" class="form-label">OS:</label>
+                <input type="text" id="soft-os" value="Windows" class="form-input" required>
+            </div>
+			<div class="form-field">
+                <label for="game-url" class="form-label">SOFT:</label>
+                <input type="text" id="soft-soft" value="None" class="form-input" required>
+            </div>
+			<div class="form-field">
+                <label for="game-url" class="form-label">Size:</label>
+                <input type="text" id="soft-size" value="0MB" class="form-input" required>
             </div>
             <div class="form-actions">
                 <button type="button" onclick="addSoftware()">Add software</button>
@@ -359,7 +524,7 @@ function addGamePass() {
                 <input type="text" id="pass-icon" class="form-input" required>
             </div>
             <div class="form-field">
-                <label for="pass-price" class="form-label">Price:</label>
+                <label for="pass-price" class="form-label">Price: (commission of 40%)</label>
                 <input type="text" id="pass-price" class="form-input" required>
             </div>
             <div class="form-field">
@@ -393,6 +558,13 @@ function addGamePass() {
         }
 
         openTab('game-tab', document.getElementsByClassName('tablink')[0]);
+    </script>
+	<script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
     </script>
 </body>
 </html>

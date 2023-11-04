@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Blogs</title>
+    <style>
+        /* Стили для страницы */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .blog-form {
+            margin-bottom: 20px;
+        }
+
+        .blog-form input[type="text"], .blog-form textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+		
+        .blog-form .text-input {
+            resize: none;
+        }
+
+        .blog-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .blog-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .blog-item .blog-content {
+            margin-bottom: 10px;
+        }
+
+        .blog-item .rating {
+            margin-bottom: 10px;
+        }
+
+        .blog-item .comments {
+            display: none;
+        }
+
+        .blog-item .comments h3 {
+            margin-top: 10px;
+        }
+
+        .blog-item .comment-input {
+            width: 70%;
+        }
+		.like:hover {
+			cursor: pointer;
+		}
+		.dislike:hover {
+			cursor: pointer;
+		}
+		.dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme font {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme a {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme div {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme input {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme textarea {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme button {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme img {
+            filter: brightness(0) invert(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Blogs</h1>
+    </div>
+    <div class="container">
+        <div class="blog-form">
+            <input type="text" id="blog-title" placeholder="Title">
+            <textarea id="blog-text" class="text-input" placeholder="Text"></textarea>
+            <button id="post-blog"><img src="photo/send.png" height="32"></button>
+        </div>
+        <ul class="blog-list" id="blog-list">
+            <!-- Сюда будут добавляться блоги -->
+        </ul>
+    </div>
+
+    <script>
+	var user = localStorage.getItem('user');
+
+        // Если пользователя нет в localStorage, перенаправляем на страницу регистрации
+        if (!user) {
+            window.location.href = 'registration.html';
+        }
+		
+        // Получение имени пользователя из localStorage
+        var user = localStorage.getItem('user');
+        var userName = user ? JSON.parse(user).name : '';
+
+        // Получение элементов формы
+        var blogTitleInput = document.getElementById('blog-title');
+        var blogTextInput = document.getElementById('blog-text');
+        var postButton = document.getElementById('post-blog');
+
+        // Получение элемента списка блогов
+        var blogList = document.getElementById('blog-list');
+
+        // Функция для добавления нового блога на страницу и отправки на сервер
+        function addBlog(blog) {
+            var blogItem = document.createElement('li');
+            blogItem.classList.add('blog-item');
+
+            var blogContent = document.createElement('div');
+            blogContent.classList.add('blog-content');
+            blogContent.innerHTML = `
+                <h2>${blog.title}</h2>
+                <p>${blog.text}</p>
+                <p>By: ${blog.creator}</p>
+                <p>ID: ${blog.id}</p>
+            `;
+
+            var rating = document.createElement('div');
+            rating.classList.add('rating');
+            rating.innerHTML = `
+                <img src="photo/like.png" height="32" class="like" alt="Like">
+                <!--<span class="like-count">${blog.rating}</span>-->
+                <img src="photo/dislike.png" height="32" class="dislike" alt="Dislike">
+                <font size="6" class="dislike-count">${blog.rating}</font>&nbsp;&nbsp;&nbsp;
+                <a href="https://forms.yandex.ru/u/6523ec13c769f108a171e07b/" target="_black"><img src="photo/report.png" height="32"></a>
+            `;
+
+            var comments = document.createElement('div');
+            comments.classList.add('comments');
+            comments.innerHTML = `
+                <h3>Comments</h3>
+                <input type="text" class="comment-input" placeholder="Your Comment">
+                <button class="comment-button">Send</button>
+            `;
+
+            blogItem.appendChild(blogContent);
+            blogItem.appendChild(rating);
+            blogItem.appendChild(comments);
+            blogList.appendChild(blogItem);
+
+            // Обработчики для лайков и дизлайков
+            var likeButton = blogItem.querySelector('.like');
+            var dislikeButton = blogItem.querySelector('.dislike');
+            var likeCount = blogItem.querySelector('.like-count');
+            var dislikeCount = blogItem.querySelector('.dislike-count');
+
+            // Проверка, оценивал ли пользователь этот блог
+            var userLikedKey = `user-liked-${userName}-${blog.id}`;
+            var userDislikedKey = `user-disliked-${userName}-${blog.id}`;
+
+            if (localStorage.getItem(userLikedKey)) {
+                likeButton.classList.add('voted');
+            }
+
+            if (localStorage.getItem(userDislikedKey)) {
+                dislikeButton.classList.add('voted');
+            }
+
+            likeButton.addEventListener('click', function () {
+                if (!likeButton.classList.contains('voted')) {
+                    blog.rating++;
+                    likeCount.textContent = blog.rating;
+                    likeButton.classList.add('voted');
+                    // Сохранение информации о лайке в localStorage
+                    localStorage.setItem(userLikedKey, 'true');
+                    // Если пользователь уже поставил дизлайк, убираем его
+                    if (dislikeButton.classList.contains('voted')) {
+                        blog.rating++;
+                        dislikeButton.classList.remove('voted');
+                        dislikeCount.textContent = blog.rating;
+                        // Удаляем информацию о дизлайке из localStorage
+                        localStorage.removeItem(userDislikedKey);
+                    }
+                    updateRatingOnServer(blog);
+                }
+            });
+
+            dislikeButton.addEventListener('click', function () {
+                if (!dislikeButton.classList.contains('voted')) {
+                    blog.rating--;
+                    dislikeCount.textContent = blog.rating;
+                    dislikeButton.classList.add('voted');
+                    // Сохранение информации о дизлайке в localStorage
+                    localStorage.setItem(userDislikedKey, 'true');
+                    // Если пользователь уже поставил лайк, убираем его
+                    if (likeButton.classList.contains('voted')) {
+                        blog.rating--;
+                        likeButton.classList.remove('voted');
+                        likeCount.textContent = blog.rating;
+                        // Удаляем информацию о лайке из localStorage
+                        localStorage.removeItem(userLikedKey);
+                    }
+                    updateRatingOnServer(blog);
+                }
+            });
+
+            // Обработчик для комментариев
+            var commentInput = blogItem.querySelector('.comment-input');
+            var commentButton = blogItem.querySelector('.comment-button');
+
+            commentButton.addEventListener('click', function () {
+                var commentText = commentInput.value;
+                if (commentText) {
+                    // Отправить комментарий на сервер
+                    sendCommentToServer(blog, commentText);
+                    // Добавить комментарий на страницу
+                    addComment(blogItem, userName, commentText);
+                    // Очистить поле ввода
+                    commentInput.value = '';
+                }
+            });
+        }
+
+        // Функция для обновления рейтинга блога на сервере
+        function updateRatingOnServer(blog) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("PUT", `https://652a48c14791d884f1fcbbda.mockapi.io/api/v1/blogs/${blog.id}`, true);
+            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhttp.send(JSON.stringify({ rating: blog.rating }));
+        }
+
+        // Функция для отправки комментария на сервер
+        function sendCommentToServer(blog, comment) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", `https://652a48c14791d884f1fcbbda.mockapi.io/api/v1/blogs/${blog.id}/comments`, true);
+            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhttp.send(JSON.stringify({ userName, text: comment }));
+        }
+
+        // Функция для добавления комментария на страницу
+        function addComment(blogItem, userName, comment) {
+            var commentDiv = document.createElement('div');
+            commentDiv.textContent = `${userName}: ${comment}`;
+            blogItem.appendChild(commentDiv);
+        }
+
+        // Загрузка существующих блогов
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var blogs = JSON.parse(this.responseText);
+                blogs.forEach(function (blog) {
+                    addBlog(blog);
+                });
+            }
+        };
+        xhttp.open("GET", "https://652a48c14791d884f1fcbbda.mockapi.io/api/v1/blogs", true);
+        xhttp.send();
+
+        // Обработчик кнопки "Пост"
+        postButton.addEventListener('click', function () {
+            var title = blogTitleInput.value;
+            var text = blogTextInput.value;
+			var creator = userName;
+
+            if (title && text) {
+                var newBlog = {
+                    title,
+                    text,
+					creator,
+                    rating: 0
+                };
+
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 201) {
+                        var blog = JSON.parse(this.responseText);
+                        addBlog(blog);
+                        // Очистить поля ввода
+                        blogTitleInput.value = '';
+                        blogTextInput.value = '';
+                    }
+                };
+                xhttp.open("POST", "https://652a48c14791d884f1fcbbda.mockapi.io/api/v1/blogs", true);
+                xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhttp.send(JSON.stringify(newBlog));
+            }
+        });
+    </script>
+	<script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
+</body>
+</html>

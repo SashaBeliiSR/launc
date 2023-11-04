@@ -3,91 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <script type="text/javascript" src="games\db-pass.js"></script>
-	<script>
-    function toggleZoom(element) {
-      element.classList.toggle('zoomed');
-      element.classList.toggle('zoom-in');
-    }
-  </script>
-  <style>
-    .image-container {
-      display: flex;
-      justify-content: space-between;
-    }
-    
-    .image {
-      width: 200px;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .image img {
-      width: 100%;
-      height: auto;
-      transition: transform 0.3s ease;
-    }
-    
-    .image.zoomed {
-      z-index: 9999;
-      background-color: rgba(0, 0, 0, 0.8);
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transform: scale(1);
-      transition: transform 0.3s ease;
-    }
-    
-    .image.zoomed img {
-      max-width: 100%;
-      max-height: 100%;
-    }
-    
-    .image:hover {
-      cursor: pointer;
-    }
-    
-    .image.zoomed:hover {
-      cursor: zoom-out;
-    }
-    
-    .image.zoomed.zoom-in {
-      transform: scale(2);
-    }
-  </style>
+    <script>
+		// Шаг 1: Получить имя пользователя из localStorage
+	var user = localStorage.getItem('user');
+	if (user) {
+		var userName = JSON.parse(user).name;
+
+		// Шаг 2: Сделать GET-запрос к серверу, чтобы получить данные игрока по имени
+		var apiUrl = 'https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/prefiles?search=' + userName;
+
+		fetch(apiUrl)
+			.then(response => response.json())
+			.then(data => {
+				if (data.length > 0) {
+					// Шаг 3: Обновить данные в localStorage данными игрока
+					localStorage.setItem('user', JSON.stringify(data[0]));
+					console.log('Данные игрока обновлены в localStorage.');
+				} else {
+					console.log('Игрок с именем ' + userName + ' не найден.');
+				}
+			})
+			.catch(error => {
+				console.error('Ошибка при выполнении GET-запроса:', error);
+			});
+	} else {
+		console.log('Имя пользователя не найдено в localStorage.');
+	}
+	
+	
+		// Получение имени пользователя из localStorage
+var user = localStorage.getItem('user');
+
+// Если пользователя нет в localStorage, перенаправляем на страницу регистрации
+if (!user) {
+    //top.location.href = 'https://sashabeliisr.github.io/launc/';
+} else {
+    // Пробуем найти пользователя на сервере
+    var userName = JSON.parse(user).name;
+    var userFound = false;
+    var userBanInfo = "";
+
+    // Запрос к серверу для поиска пользователя
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var prefiles = JSON.parse(this.responseText);
+            for (var i = 0; i < prefiles.length; i++) {
+                if (prefiles[i].name === userName) {
+                    userFound = true;
+                    if (prefiles[i].Banned) {
+                        // Перенаправляем на страницу banned.html
+                        top.location.href = 'banned.html';
+                    }
+                    break;
+                }
+            }
+            if (!userFound) {
+                userBanInfo = "<p>Пользователь не найден</p>";
+            }
+            document.getElementById('ban-info').innerHTML = userBanInfo;
+        }
+    };
+    xhttp.open("GET", "https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/prefiles", true);
+    xhttp.send();
+}
+	
+	
+		function toggleZoom(element) {
+		  element.classList.toggle('zoomed');
+		  element.classList.toggle('zoom-in');
+		}
+        // Функция для обновления данных
+        function updateData() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var passId = urlParams.get('id');
+
+            if (!passId) {
+                return;
+            }
+
+            // Получение данных об игроке из локального хранилища
+            var user = localStorage.getItem('user');
+            if (!user) {
+                alert('Please log in to continue.');
+                window.location.href = './loginin.html'; // Перенаправляем на страницу входа, если пользователь не вошел
+                return;
+            }
+
+            var userObj = JSON.parse(user);
+            var userId = userObj.id;
+            var userName = userObj.name;
+            var userBalance = parseFloat(userObj.balance);
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var response = JSON.parse(this.responseText);
+                    var pass = response.find(function (item) {
+                        return item.id === passId;
+                    });
+
+                    if (!pass) {
+                        return;
+                    }
+
+                    var titleElement = document.getElementById('game-title');
+                    titleElement.innerHTML = pass.title;
+
+                    document.getElementById('company').innerHTML = pass.developer;
+                    document.getElementById('rating').innerHTML = pass.rating;
+                    document.getElementById('appid').innerHTML = pass.id;
+
+                    var downloadButton = document.getElementById('download-button');
+					var passPrice = parseFloat(pass.price);
+
+					// Проверка наличия "pass" в инвентаре
+					var inventory = userObj.inventory || [];
+					var isPassInInventory = inventory.includes(passId + ':p');
+
+					if (isPassInInventory) {
+						// Если "pass" уже в инвентаре, измените текст кнопки и добавьте обработчик
+						downloadButton.innerHTML = '<font face="Arial" color="green">Item in your inventory</font>'; // Измените текст кнопки
+						downloadButton.onclick = function () {
+							// Откройте "pass", перенаправив пользователя на страницу загрузки (pass.url)
+						};
+					} else {
+						if (passPrice > 0) {
+							// Если цена больше 0, то устанавливаем обработчик для кнопки Buy
+							downloadButton.innerHTML = '<img src="photo/buy.png" alt="Buy">'; // Измените текст кнопки на изображение "Buy"
+							downloadButton.onclick = function () {
+								if (userBalance >= passPrice) {
+									// Если у пользователя достаточно средств, списываем средства и добавляем в инвентарь
+									userBalance -= passPrice;
+									userObj.balance = userBalance;
+
+									inventory.push(passId + ':p'); // Добавляем "pass" в инвентарь
+									userObj.inventory = inventory;
+
+									localStorage.setItem('user', JSON.stringify(userObj));
+									updatePlayerData(userId, userObj);
+
+									alert('Purchase successful. Pass added to your inventory.');
+
+									// Перенаправьте пользователя на страницу загрузки после покупки
+									window.location.href = pass.url;
+								} else {
+									alert('Insufficient funds. Please add funds to your account.');
+								}
+							};
+						} else {
+							// Если цена "pass" равна 0, то "pass" добавляется в инвентарь
+							downloadButton.innerHTML = '<img src="photo/buy.png" alt="Buy">'; // Верните текст кнопки "Download"
+							downloadButton.onclick = function () {
+								if (!isPassInInventory) {
+									inventory.push(passId + ':p'); // Добавляем "pass" в инвентарь
+									userObj.inventory = inventory;
+									localStorage.setItem('user', JSON.stringify(userObj));
+
+									// Обновляем данные об игроке на сервере
+									updatePlayerData(userId, userObj);
+									alert('Pass added to your inventory.');
+
+									// Перенаправьте пользователя на страницу загрузки после добавления в инвентарь
+									window.location.href = pass.url;
+								} else {
+									alert('This pass is already in your inventory.');
+								}
+							};
+						}
+					}
+
+
+                    document.getElementById('screen1').src = pass.icon;
+
+                    document.getElementById('icon').src = pass.icon;
+                }
+            };
+            xhttp.open("GET", "https://647f2f10c246f166da904909.mockapi.io/api/v1/marketplace", true);
+            xhttp.send();
+        }
+
+        // Функция для обновления данных об игроке на сервере
+        function updatePlayerData(userId, userData) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log('Player data updated on the server.');
+                }
+            };
+            xhttp.open("PUT", "https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/prefiles/" + userId, true);
+            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhttp.send(JSON.stringify(userData));
+        }
+
+        // Функция для оценки приложения
+        function ratepass(rating) {
+            var urlParams = new URLSearchParams(window.location.search);
+            var passId = urlParams.get('id');
+
+            var user = localStorage.getItem('user');
+            if (user) {
+                var userName = JSON.parse(user).name;
+                var ratingElement = document.getElementById('rating');
+                var currentRating = parseInt(ratingElement.innerHTML);
+
+                // Check if the rating is already set by the user for this app
+                if (localStorage.getItem('pass-' + passId)) {
+                    alert('You have already rated this passware.');
+                    return;
+                }
+
+                // Update the rating
+                var updatedRating = currentRating + rating;
+                ratingElement.innerHTML = updatedRating;
+
+                // Save the rating for the user and app
+                localStorage.setItem('pass-' + passId, 'rated');
+
+                // Disable rating buttons after rating
+                var likeButton = document.getElementById('like-button');
+                var dislikeButton = document.getElementById('dislike-button');
+                likeButton.disabled = true;
+                dislikeButton.disabled = true;
+
+                // Send the updated rating to the server
+                var data = {
+                    rating: updatedRating
+                };
+
+                fetch('https://647f2f10c246f166da904909.mockapi.io/api/v1/marketplace/' + passId, {
+                    method: 'PUT',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                })
+                    .then(response => response.json())
+                    .then(json => console.log(json))
+                    .catch(error => console.log(error));
+            } else {
+                alert('Please log in to rate the passware.');
+            }
+        }
+    </script>
+    <style>
+        .image.zoomed {
+		  z-index: 9999;
+		  background-color: rgba(0, 0, 0, 0.8);
+		  position: fixed;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100%;
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		  transform: scale(1);
+		  transition: transform 0.3s ease;
+		}
+		
+		.image.zoomed img {
+		  max-width: 100%;
+		  max-height: 100%;
+		}
+		
+		.image:hover {
+		  cursor: pointer;
+		}
+		
+		.image.zoomed:hover {
+		  cursor: zoom-out;
+		}
+		
+		.image.zoomed.zoom-in {
+		  transform: scale(2);
+		}
+		.dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme font {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme a {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme div {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
 </head>
 <body onload="updateData()">
-    <!--<a href="..\text1.html" style="text-decoration: none;"><font face="Arial" size="6">Back</font></a>-->
     <a href="./text4.html" style="text-decoration: none;"><img src="photo/back.png" height="64"><font face="Arial" size="16">Home</font></a>
     <center>
         <table height="600" width="800" border="0">
             <tr height="80">
-                <td><center><img src="g1.png" height="80" width="80" id="icon"></center></td>
+                <td><center><img src="g1.png" height="80" width="80" id="icon" onerror="this.src='nophoto.png'" style="border-radius: 25px;"></center></td>
                 <td align="center"><font face="Arial" size="6" id="game-title">Test pass</font></td>
             </tr>
             <tr height="67">
                 <td colspan="2" align="center">
-                    
                     <font face="Arial" size="4" id="company">My company LNC.</font><br>
                     <font face="Arial" size="4">Pass id:</font><font face="Arial" size="4" id="appid">0</font><br>
-                    <img height="128" width="200" src="games\nophoto.png" id="screen1" onclick="toggleZoom(this)" class="image">
+                    <img height="128" width="200" src="games\nophoto.png" id="screen1" onclick="toggleZoom(this)" class="image" onerror="this.src='nophoto.png'" style="border-radius: 14px;">
                     <br>
                     <font face="Arial" size="5">Description:</font><br>
                     <font face="Arial" size="5" color="grey" id="description">No description!</font><br><br>
                     <div>
-                        <img src="photo/star.png" height="24" onclick="rateGame(1)" onmouseover="this.style.cursor='pointer'">
-                        <img src="photo/star.png" height="24" onclick="rateGame(2)" onmouseover="this.style.cursor='pointer'">
-                        <img src="photo/star.png" height="24" onclick="rateGame(3)" onmouseover="this.style.cursor='pointer'">
-                        <img src="photo/star.png" height="24" onclick="rateGame(4)" onmouseover="this.style.cursor='pointer'">
-                        <img src="photo/star.png" height="24" onclick="rateGame(5)" onmouseover="this.style.cursor='pointer'">
+                        <img src="photo/like.png" height="24" onclick="ratePass(1)" onmouseover="this.style.cursor='pointer'" id="like-button">
+                        <img src="photo/dislike.png" height="24" onclick="ratePass(-1)" onmouseover="this.style.cursor='pointer'" id="dislike-button">
                     </div><br>
-					<img src="photo/star.png" height="24">
+                    <img src="photo/star.png" height="24">
                     <font face="Arial" size="5" id="rating">0</font><br><br><br>
-					<a href="files\testgame.zip" id="donwload"><img src="photo\buy.png" width="300" height="67"></a><br>
+                    <a href="#" id="download-button" style="text-decoration: none;"><img src="photo\buy.png" width="300" height="67"></a><br>
                 </td>
             </tr>
             <tr width="800" height="900">
@@ -96,5 +327,12 @@
             </tr>
         </table>
     </center>
+	<script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
 </body>
 </html>

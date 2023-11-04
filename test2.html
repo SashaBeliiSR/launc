@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Изображение</title>
+    <style>
+        .image-container {
+            text-align: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+        .dark-theme img {
+            filter: brightness(0) invert(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="image-container">
+        <img id="themeImage" src="photo/button1.png" alt="Black Image">
+        <p>Текст в темной теме</p>
+    </div>
+    <script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
+</body>
+</html>

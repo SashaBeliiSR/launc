@@ -6,9 +6,9 @@
     <style>
         /* Стили формы профиля */
         #profile-form {
-            max-width: 400px;
+            max-width: 500px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 30px;
             background-color: #f2f2f2;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -30,6 +30,39 @@
             max-width: 200px;
             max-height: 200px;
             margin-bottom: 10px;
+        }
+		.dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme font {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme a {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme table {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme div {
+            background-color: #333;
+            color: #fff;
+			border-color: #333;
+        }
+		.dark-theme p {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme label {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme center {
+            background-color: #333;
+            color: #fff;
         }
     </style>
     <script>
@@ -66,12 +99,22 @@
 </head>
 <body>
     <div id="profile-form">
-        <label for="profile-avatar">Avatar:</label>
-        <img id="profile-avatar" src="" alt="Аватар пользователя">
+        <!--<label for="profile-avatar">Avatar:</label>-->
+        <!-- <img id="profile-avatar" src="" alt="Аватар пользователя" height="64" style="border-radius: 14px;"> -->
 
-        <label for="profile-name">User name:</label>
-        <p id="profile-name"></p>
-
+        <!--<label for="profile-name">User name:</label>-->
+        <!-- <font id="profile-name" align="center"></font> -->
+		<table border="0" style="border-collapse: collapse; width: 100%; height: 52px;">
+		<tbody>
+		<tr style="height: 52px;">
+		<td style="width: 50%; height: 52px;"><center><img src="#" width="64" height="64" alt="" id="profile-avatar" style="border-radius: 14px;" onerror="this.src='nophoto.png'"></center></td>
+		<td style="width: 50%; height: 52px;">
+		<font id="profile-name" align="center" face="Arial" size="5"></font>
+		</td>
+		</tr>
+		</tbody>
+		</table>
+		<center>
         <label for="profile-status">Status:</label>
         <p id="profile-status"></p>
 
@@ -80,6 +123,14 @@
 
         <label for="profile-id">Id:</label>
         <p id="profile-id"></p>
+		</center>
     </div>
+	<script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
 </body>
 </html>

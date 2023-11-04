@@ -5,6 +5,7 @@
     <title>Регистрация</title>
     <style>
         .form-container {
+			background-color: #f2f2f2;
             max-width: 400px;
             margin: 0 auto;
             padding: 20px;
@@ -30,9 +31,9 @@
             padding: 10px 20px;
             font-size: 16px;
         }
-		
-		body {
-            background-color: #f2f2f2;
+        
+        body {
+			background: linear-gradient(to bottom right, #FF6B6B, #FF8E53);
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
@@ -91,7 +92,26 @@
         }
     </style>
     <script>
-        function registerUser() {
+		// Функция для хэширования пароля
+        function hashPassword(password) {
+            // В реальных условиях использования, вам следует использовать библиотеку для более безопасного хэширования.
+            var hashedPassword = btoa(password); // Это упрощенное хэширование для примера.
+
+            return hashedPassword;
+        }
+	
+        async function checkExistingUser(name) {
+            try {
+                const response = await fetch("https://6455f3055f9a4f2361374d32.mockapi.io/prefiles?name=" + name);
+                const data = await response.json();
+                return data.length > 0; // Если есть пользователи с таким именем, возвращаем true
+            } catch (error) {
+                console.error("Error when validating an existing user:", error);
+                return false;
+            }
+        }
+
+        async function registerUser() {
             var nameInput = document.getElementById('name');
             var emailInput = document.getElementById('email');
             var passwordInput = document.getElementById('password');
@@ -103,28 +123,39 @@
             var avatar = avatarInput.value;
             
             if (name && email && password && avatar) {
+				// Хэшируйте пароль перед отправкой на сервер
+                var hashedPassword = hashPassword(password);
+			
+                // Проверка, существует ли пользователь с таким именем на сервере
+                const userExists = await checkExistingUser(name);
+
+                if (userExists) {
+                    alert('Error when validating an existing user:');
+                    return;
+                }
+                
                 var newUser = {
                     name: name,
                     email: email,
-                    password: password,
-                    avatar: avatar
+                    password: hashedPassword,
+                    avatar: avatar,
+                    status: 'Player',    // Добавили статус
+                    balance: 0,          // Добавили баланс
+                    inventory: null      // Добавили инвентарь
                 };
-                
-                // Save user data to local storage
-                localStorage.setItem('user', JSON.stringify(newUser));
                 
                 // Save user data to server
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4) {
                         if (this.status == 201) {
-                            alert('Регистрация прошла успешно!');
+                            alert('Registration was successful!');
                             nameInput.value = '';
                             emailInput.value = '';
                             passwordInput.value = '';
                             avatarInput.value = '';
                         } else {
-                            alert('Ошибка при регистрации. Пожалуйста, попробуйте еще раз.');
+                            alert('Error during registration. Please try again.');
                         }
                     }
                 };
@@ -132,7 +163,7 @@
                 xhttp.setRequestHeader("Content-type", "application/json");
                 xhttp.send(JSON.stringify(newUser));
             } else {
-                alert('Пожалуйста, заполните все поля формы.');
+                alert('Please fill out all fields on the form.');
             }
         }
         
@@ -180,7 +211,7 @@
         <!--<div class="form-field">
             <button onclick="clearUserData()">Очистить данные пользователя</button>
         </div>-->
-		<font face="Arial" color="black">Have an account?   </font><a target="Main" href="loginin.html"><font face="Arial" color="black">Login in</font></a>
+        <font face="Arial" color="black">Have an account?   </font><a target="Main" href="loginin.html"><font face="Arial" color="black">Login in</font></a>
     </div>
 </body>
 </html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style\main.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+        }
+        
+        .tabs {
+            display: flex;
+            background-color: #333;
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        
+        .tab:hover {
+            background-color: #555;
+        }
+        
+        .tab.active {
+            background-color: #444;
+        }
+        
+        .search-container {
+            padding: 20px;
+            background-color: #fff;
+        }
+        
+        .search-input {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+        }
+        
+        .content {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #ccc;
+            margin: 10px;
+            background-color: #fff;
+            transition: background-color 0.3s;
+            flex: 1 1 calc(33.33% - 20px);
+            box-sizing: border-box;
+            order: 0;
+        }
+        
+        .card:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .card-content {
+            flex: 1;
+        }
+        
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .card-details {
+            font-style: italic;
+            color: #555;
+        }
+        
+        .card-price {
+            font-weight: bold;
+            color: #f44336;
+        }
+		.dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme font {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme a {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme div {
+            background-color: #333;
+            color: #fff;
+        }
+		.dark-theme input {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+    <script>
+        function openTab(tabName, element) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).style.display = "flex";
+            element.classList.add("active");
+        }
+
+        function searchProfiles() {
+            var input = document.getElementById('search-input-profile');
+            var filter = input.value.toUpperCase();
+            var profilesContainer = document.getElementById('profiles-container');
+            var profiles = profilesContainer.getElementsByClassName('card');
+
+            for (var i = 0; i < profiles.length; i++) {
+                var nameElement = profiles[i].getElementsByClassName('card-title')[0];
+                var name = nameElement.textContent || nameElement.innerText;
+
+                if (name.toUpperCase().indexOf(filter) > -1) {
+                    profiles[i].style.display = "flex";
+                } else {
+                    profiles[i].style.display = "none";
+                }
+            }
+        }
+
+        function fetchProfiles() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var profiles = JSON.parse(this.responseText);
+                    var profilesContainer = document.getElementById('profiles-container');
+
+                    profiles.forEach(function(profile, index) {
+                        var profileCard = document.createElement('div');
+                        profileCard.className = 'card';
+                        profileCard.style.order = index;
+
+                        var profileIcon = document.createElement('img');
+                        profileIcon.className = 'card-icon';
+                        profileIcon.src = profile.avatar;
+
+                        var profileContent = document.createElement('div');
+                        profileContent.className = 'card-content';
+
+                        var profileTitle = document.createElement('div');
+                        profileTitle.className = 'card-title';
+                        profileTitle.innerHTML = profile.name;
+
+                        var profileDetails = document.createElement('div');
+                        profileDetails.className = 'card-details';
+                        profileDetails.innerHTML = 'Email: <a href="mailto:' + profile.email + '">' + profile.email + '</a>';
+
+                        var profileStatus = document.createElement('div');
+                        profileStatus.className = 'card-details';
+                        profileStatus.innerHTML = 'Статус: ' + profile.status;
+
+                        profileContent.appendChild(profileTitle);
+                        profileContent.appendChild(profileDetails);
+                        profileContent.appendChild(profileStatus);
+
+                        profileCard.appendChild(profileIcon);
+                        profileCard.appendChild(profileContent);
+
+                        profileCard.addEventListener('click', function() {
+                            window.location.href = 'profile.html?id=' + profile.id;
+                        });
+
+                        profilesContainer.appendChild(profileCard);
+                    });
+                }
+            };
+            xhttp.open("GET", "https://6455f3055f9a4f2361374d32.mockapi.io/prefiles", true);
+            xhttp.send();
+        }
+
+        function searchGames() {
+            var input = document.getElementById('search-input-game');
+            var filter = input.value.toUpperCase();
+            var gamesContainer = document.getElementById('games-container');
+            var games = gamesContainer.getElementsByClassName('card');
+
+            for (var i = 0; i < games.length; i++) {
+                var titleElement = games[i].getElementsByClassName('card-title')[0];
+                var title = titleElement.textContent || titleElement.innerText;
+
+                if (title.toUpperCase().indexOf(filter) > -1) {
+                    games[i].style.display = "flex";
+                } else {
+                    games[i].style.display = "none";
+                }
+            }
+        }
+
+        function fetchGames() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var games = JSON.parse(this.responseText);
+                    var gamesContainer = document.getElementById('games-container');
+
+                    games.forEach(function(game, index) {
+                        var gameCard = document.createElement('div');
+                        gameCard.className = 'card';
+                        gameCard.style.order = index;
+
+                        gameCard.onclick = function() {
+                            window.location.href = 'game.html?id=' + game.id;
+                        };
+
+                        var gameIcon = document.createElement('img');
+                        gameIcon.className = 'card-icon';
+                        gameIcon.src = game.icon;
+
+                        var gameContent = document.createElement('div');
+                        gameContent.className = 'card-content';
+
+                        var gameTitle = document.createElement('div');
+                        gameTitle.className = 'card-title';
+                        gameTitle.innerHTML = game.title;
+
+                        var gameDeveloper = document.createElement('div');
+                        gameDeveloper.className = 'card-details';
+                        gameDeveloper.innerHTML = 'Developer: ' + game.developer;
+
+                        var gamePrice = document.createElement('div');
+                        gamePrice.className = 'card-price';
+                        gamePrice.innerHTML = 'Price: ' + game.price + ' Launcs';
+
+                        gameContent.appendChild(gameTitle);
+                        gameContent.appendChild(gameDeveloper);
+                        gameContent.appendChild(gamePrice);
+
+                        gameCard.appendChild(gameIcon);
+                        gameCard.appendChild(gameContent);
+
+                        gamesContainer.appendChild(gameCard);
+                    });
+                }
+            };
+            xhttp.open("GET", "https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/games", true);
+            xhttp.send();
+        }
+
+        function searchSoftwares() {
+            var input = document.getElementById('search-input-software');
+            var filter = input.value.toUpperCase();
+            var softwaresContainer = document.getElementById('softwares-container');
+            var softwares = softwaresContainer.getElementsByClassName('card');
+
+            for (var i = 0; i < softwares.length; i++) {
+                var titleElement = softwares[i].getElementsByClassName('card-title')[0];
+                var title = titleElement.textContent || titleElement.innerText;
+
+                if (title.toUpperCase().indexOf(filter) > -1) {
+                    softwares[i].style.display = "flex";
+                } else {
+                    softwares[i].style.display = "none";
+                }
+            }
+        }
+
+        function fetchSoftwares() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var softwares = JSON.parse(this.responseText);
+                    var softwaresContainer = document.getElementById('softwares-container');
+
+                    softwares.forEach(function(software, index) {
+                        var softwareCard = document.createElement('div');
+                        softwareCard.className = 'card';
+                        softwareCard.style.order = index;
+
+                        softwareCard.onclick = function() {
+                            window.location.href = 'software.html?id=' + software.id;
+                        };
+
+                        var softwareIcon = document.createElement('img');
+                        softwareIcon.className = 'card-icon';
+                        softwareIcon.src = software.icon;
+
+                        var softwareContent = document.createElement('div');
+                        softwareContent.className = 'card-content';
+
+                        var softwareTitle = document.createElement('div');
+                        softwareTitle.className = 'card-title';
+                        softwareTitle.innerHTML = software.title;
+
+                        var softwareDeveloper = document.createElement('div');
+                        softwareDeveloper.className = 'card-details';
+                        softwareDeveloper.innerHTML = 'Developer: ' + software.developer;
+
+                        var softwarePrice = document.createElement('div');
+                        softwarePrice.className = 'card-price';
+                        softwarePrice.innerHTML = 'Price: ' + software.price + ' Launcs';
+
+                        softwareContent.appendChild(softwareTitle);
+                        softwareContent.appendChild(softwareDeveloper);
+                        softwareContent.appendChild(softwarePrice);
+
+                        softwareCard.appendChild(softwareIcon);
+                        softwareCard.appendChild(softwareContent);
+
+                        softwaresContainer.appendChild(softwareCard);
+                    });
+                }
+            };
+            xhttp.open("GET", "https://647f2f10c246f166da904909.mockapi.io/api/v1/softwares", true);
+            xhttp.send();
+        }
+
+        function searchPasses() {
+            var input = document.getElementById('search-input-pass');
+            var filter = input.value.toUpperCase();
+            var passesContainer = document.getElementById('passes-container');
+            var passes = passesContainer.getElementsByClassName('card');
+
+            for (var i = 0; i < passes.length; i++) {
+                var titleElement = passes[i].getElementsByClassName('card-title')[0];
+                var title = titleElement.textContent || titleElement.innerText;
+
+                if (title.toUpperCase().indexOf(filter) > -1) {
+                    passes[i].style.display = "flex";
+                } else {
+                    passes[i].style.display = "none";
+                }
+            }
+        }
+
+        function fetchPasses() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var passes = JSON.parse(this.responseText);
+                    var passesContainer = document.getElementById('passes-container');
+
+                    passes.forEach(function(pass, index) {
+                        var passCard = document.createElement('div');
+                        passCard.className = 'card';
+                        passCard.style.order = index;
+
+                        passCard.onclick = function() {
+                            window.location.href = 'pass.html?id=' + pass.id;
+                        };
+
+                        var passIcon = document.createElement('img');
+                        passIcon.className = 'card-icon';
+                        passIcon.src = pass.icon;
+
+                        var passContent = document.createElement('div');
+                        passContent.className = 'card-content';
+
+                        var passTitle = document.createElement('div');
+                        passTitle.className = 'card-title';
+                        passTitle.innerHTML = pass.title;
+
+                        var passDetails = document.createElement('div');
+                        passDetails.className = 'card-details';
+                        passDetails.innerHTML = 'Type: ' + pass.type;
+
+                        var passPrice = document.createElement('div');
+                        passPrice.className = 'card-price';
+                        passPrice.innerHTML = 'Price: ' + pass.price + ' Launcs';
+
+                        passContent.appendChild(passTitle);
+                        passContent.appendChild(passDetails);
+                        passContent.appendChild(passPrice);
+
+                        passCard.appendChild(passIcon);
+                        passCard.appendChild(passContent);
+
+                        passCard.addEventListener('click', function() {
+                            window.location.href = 'pass.html?id=' + pass.id;
+                        });
+
+                        passesContainer.appendChild(passCard);
+                    });
+                }
+            };
+            xhttp.open("GET", "https://647f2f10c246f166da904909.mockapi.io/api/v1/marketplace", true);
+            xhttp.send();
+        }
+    </script>
+</head>
+<body onload="fetchProfiles(); fetchGames(); fetchSoftwares(); fetchPasses();">
+    <div class="tabs">
+        <div class="tab active" onclick="openTab('profile-tab', this)">Profiles</div>
+        <div class="tab" onclick="openTab('game-tab', this)">Games</div>
+        <div class="tab" onclick="openTab('software-tab', this)">Softwares</div>
+        <div class="tab" onclick="openTab('pass-tab', this)">Passes</div>
+    </div>
+
+    <div class="search-container">
+        <input type="text" class="search-input" id="search-input-profile" placeholder="Search profiles" onkeyup="searchProfiles()">
+        <input type="text" class="search-input" id="search-input-game" placeholder="Search games" onkeyup="searchGames()">
+        <input type="text" class="search-input" id="search-input-software" placeholder="Search softwares" onkeyup="searchSoftwares()">
+        <input type="text" class="search-input" id="search-input-pass" placeholder="Search passes" onkeyup="searchPasses()">
+    </div>
+
+    <div id="profile-tab" class="tabcontent" style="display: flex;">
+        <div class="content" id="profiles-container"></div>
+    </div>
+
+    <div id="game-tab" class="tabcontent">
+        <div class="content" id="games-container"></div>
+    </div>
+
+    <div id="software-tab" class="tabcontent">
+        <div class="content" id="softwares-container"></div>
+    </div>
+
+    <div id="pass-tab" class="tabcontent">
+        <div class="content" id="passes-container"></div>
+    </div>
+
+    <script>
+        openTab('profile-tab', document.getElementsByClassName('tab')[0]);
+    </script>
+	<script>
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
+</body>
+</html>

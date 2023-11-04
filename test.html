@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Выбор темы</title>
+</head>
+<body>
+    <h1>Выберите тему:</h1>
+    <label for="lightTheme">Светлая тема</label>
+    <input type="radio" id="lightTheme" name="theme" value="light">
+    <label for="darkTheme">Темная тема</label>
+    <input type="radio" id="darkTheme" name="theme" value="dark">
+    <button id="saveThemeButton">Сохранить</button>
+    <script>
+        const lightThemeRadio = document.getElementById('lightTheme');
+        const darkThemeRadio = document.getElementById('darkTheme');
+        const saveThemeButton = document.getElementById('saveThemeButton');
+
+        // Загружаем текущую тему из Local Storage при загрузке страницы
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            darkThemeRadio.checked = true;
+        } else {
+            lightThemeRadio.checked = true;
+        }
+
+        // Обработчик кнопки "Сохранить"
+        saveThemeButton.addEventListener('click', function() {
+            if (darkThemeRadio.checked) {
+                document.body.classList.add('dark-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+</body>
+</html>

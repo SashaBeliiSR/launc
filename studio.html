@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Products</title>
+    <style>
+        /* Стили для темной темы */
+        body {
+            background-color: #333;
+            color: #fff;
+        }
+
+        button {
+            background-color: #555;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+			border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #777;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        li img {
+            width: 32px;
+            height: 32px;
+            margin-right: 10px;
+        }
+
+        .edit-button,
+        .delete-button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+			border-radius: 5px;
+        }
+
+        .edit-button:hover,
+        .delete-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Стили для модального окна */
+        .modal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .modal input {
+            display: block;
+            margin: 10px 0;
+        }
+		
+		input {
+			border-radius: 5px;
+		}
+    </style>
+</head>
+<body>
+    <div>
+        <button id="games-tab">Games</button>
+        <button id="softwares-tab">Softwares</button>
+        <button id="marketplace-tab">Marketplace</button>
+		<a href="create.html"><button>Add product</button></a>
+    </div>
+    <ul id="product-list">
+        <!-- Здесь будет список продуктов -->
+    </ul>
+
+    <!-- Модальное окно для редактирования продукта -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <font face="Arial" size="4">Edit Product</font><br>
+			<font face="Arial" size="3">Title:</font>
+            <input type="text" id="titleInput" placeholder="Title">
+			<font face="Arial" size="3">Description:</font>
+            <input type="text" id="descriptionInput" placeholder="Description">
+			<font face="Arial" size="3">Price:</font>
+            <input type="number" id="priceInput" placeholder="Price">
+			<font face="Arial" size="3">Icon: (url)</font>
+            <input type="text" id="iconInput" placeholder="Icon URL">
+			<font face="Arial" size="3">Screenshot 1: (url)</font>
+            <input type="text" id="screen1Input" placeholder="Screenshot 1 URL">
+			<font face="Arial" size="3" id="nomrk1">Screenshot 2: (url)</font>
+            <input type="text" id="screen2Input" placeholder="Screenshot 2 URL">
+			<font face="Arial" size="3" id="nomrk2">Screenshot 3: (url)</font>
+            <input type="text" id="screen3Input" placeholder="Screenshot 3 URL">
+			<font face="Arial" size="3" id="nomrk3">Video: (youtube id)</font>
+            <input type="text" id="videoInput" placeholder="Video Id">
+			<font face="Arial" size="3" id="nomrk4">File url: (zip)</font>
+            <input type="text" id="fileUrlInput" placeholder="Product URL">
+			<font face="Arial" size="3" id="nomrk12">In Dev:</font>
+            <input type="text" id="indevInput" placeholder="In Dev Status">
+			<font face="Arial" size="3" id="nomrk5">Age:</font>
+            <input type="text" id="ageInput" placeholder="Age">
+			<font face="Arial" size="4" id="nomrk6">Requirements</font><br>
+			<font face="Arial" size="3" id="nomrk7">SOFT:</font>
+            <input type="text" id="softInput" placeholder="SOFT">
+			<font face="Arial" size="3" id="nomrk8">CPU:</font>
+            <input type="text" id="cpuInput" placeholder="CPU">
+			<font face="Arial" size="3" id="nomrk9">GPU:</font>
+            <input type="text" id="gpuInput" placeholder="GPU">
+			<font face="Arial" size="3" id="nomrk10">RAM:</font>
+            <input type="text" id="ramInput" placeholder="RAM">
+			<font face="Arial" size="3" id="nomrk11">OS:</font>
+            <input type="text" id="osInput" placeholder="OS">
+            <button id="saveButton">Save</button>
+            <button id="cancelButton">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // Функция для загрузки и отображения продуктов
+        function loadProducts(endpoint, user) {
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(data => {
+                    const productList = document.getElementById('product-list');
+                    productList.innerHTML = ''; // Очистка списка перед обновлением
+
+                    data.forEach(product => {
+                        if (product.developer === user.name) {
+                            const listItem = document.createElement('li');
+                            const productIcon = document.createElement('img');
+                            productIcon.src = product.icon;
+                            listItem.appendChild(productIcon);
+
+                            listItem.textContent = product.title;
+                            const editButton = document.createElement('button');
+                            editButton.className = 'edit-button';
+                            editButton.textContent = 'Edit';
+                            editButton.addEventListener('click', () => {
+                                // Обработчик для редактирования продукта
+                                editProduct(product, endpoint);
+                            });
+                            listItem.appendChild(editButton);
+
+                            const deleteButton = document.createElement('button');
+                            deleteButton.className = 'delete-button';
+                            deleteButton.textContent = 'Delete';
+                            deleteButton.addEventListener('click', () => {
+                                // Обработчик для удаления продукта
+                                deleteProduct(product.id, endpoint);
+                            });
+                            listItem.appendChild(deleteButton);
+                            productList.appendChild(listItem);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading products:', error);
+                });
+        }
+
+        // Обработчики событий для вкладок
+        document.getElementById('games-tab').addEventListener('click', () => {
+            loadProducts('https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/games', user);
+        });
+
+        document.getElementById('softwares-tab').addEventListener('click', () => {
+            loadProducts('https://647f2f10c246f166da904909.mockapi.io/api/v1/softwares', user);
+        });
+
+        document.getElementById('marketplace-tab').addEventListener('click', () => {
+            loadProducts('https://647f2f10c246f166da904909.mockapi.io/api/v1/marketplace', user);
+        });
+
+        // Получим пользователя из Local Storage
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        // По умолчанию загрузим продукты с сервера Games
+        loadProducts('https://6455f3055f9a4f2361374d32.mockapi.io/api/v1/games', user);
+
+        // Обработчик для редактирования продукта
+        function editProduct(product, endpoint) {
+            // Открываем модальное окно редактирования и заполняем поля данными продукта
+            const editModal = document.getElementById('editModal');
+            const titleInput = document.getElementById('titleInput');
+            const descriptionInput = document.getElementById('descriptionInput');
+            const priceInput = document.getElementById('priceInput');
+            const screen1Input = document.getElementById('screen1Input');
+			const screen2Input = document.getElementById('screen2Input');
+			const screen3Input = document.getElementById('screen3Input');
+			const fileUrlInput = document.getElementById('fileUrlInput');
+			const ageInput = document.getElementById('ageInput');
+			const softInput = document.getElementById('softInput');
+			const cpuInput = document.getElementById('cpuInput');
+			const gpuInput = document.getElementById('gpuInput');
+			const ramInput = document.getElementById('ramInput');
+			const osInput = document.getElementById('osInput');
+			const videoInput = document.getElementById('videoInput');
+			const indevInput = document.getElementById('indevInput');
+			
+            titleInput.value = product.title;
+            descriptionInput.value = product.description;
+            priceInput.value = product.price;
+            iconInput.value = product.icon;
+			screen1Input.value = product.screen1;
+			screen2Input.value = product.screen2;
+			screen3Input.value = product.screen3;
+			fileUrlInput.value = product.url;
+			ageInput.value = product.age;
+			softInput.value = product.rsoft;
+			cpuInput.value = product.rcpu;
+			gpuInput.value = product.rgpu;
+			ramInput.value = product.rram;
+			osInput.value = product.ros;
+			videoInput.value = product.video;
+			indevInput.value = product.indev;
+			
+			if(endpoint == "https://647f2f10c246f166da904909.mockapi.io/api/v1/marketplace")
+			{
+				screen2Input.style.display = 'none';
+				screen3Input.style.display = 'none';
+				fileUrlInput.style.display = 'none';
+				ageInput.style.display = 'none';
+				softInput.style.display = 'none';
+				cpuInput.style.display = 'none';
+				gpuInput.style.display = 'none';
+				ramInput.style.display = 'none';
+				osInput.style.display = 'none';
+				videoInput.style.display = 'none';
+				nomrk1.style.display = 'none';
+				nomrk2.style.display = 'none';
+				nomrk3.style.display = 'none';
+				nomrk4.style.display = 'none';
+				nomrk5.style.display = 'none';
+				nomrk6.style.display = 'none';
+				nomrk7.style.display = 'none';
+				nomrk8.style.display = 'none';
+				nomrk9.style.display = 'none';
+				nomrk10.style.display = 'none';
+				nomrk11.style.display = 'none';
+				nomrk12.style.display = 'none';
+				indevInput.style.display = 'none';
+			}
+			else
+			{
+				screen2Input.style.display = 'flex';
+				screen3Input.style.display = 'flex';
+				fileUrlInput.style.display = 'flex';
+				ageInput.style.display = 'flex';
+				softInput.style.display = 'flex';
+				cpuInput.style.display = 'flex';
+				gpuInput.style.display = 'flex';
+				ramInput.style.display = 'flex';
+				osInput.style.display = 'flex';
+				videoInput.style.display = 'flex';
+				nomrk1.style.display = 'flex';
+				nomrk2.style.display = 'flex';
+				nomrk3.style.display = 'flex';
+				nomrk4.style.display = 'flex';
+				nomrk5.style.display = 'flex';
+				nomrk6.style.display = 'flex';
+				nomrk7.style.display = 'flex';
+				nomrk8.style.display = 'flex';
+				nomrk9.style.display = 'flex';
+				nomrk10.style.display = 'flex';
+				nomrk11.style.display = 'flex';
+				nomrk12.style.display = 'flex';
+				indevInput.style.display = 'flex';
+			}
+
+            // При нажатии кнопки "Save" сохраняем изменения
+            const saveButton = document.getElementById('saveButton');
+            saveButton.addEventListener('click', () => {
+                product.title = titleInput.value;
+                product.description = descriptionInput.value;
+                product.price = priceInput.value;
+                product.icon = iconInput.value;
+				product.screen1 = screen1Input.value;
+				product.screen2 = screen2Input.value;
+				product.screen3 = screen3Input.value;
+				product.url = fileUrlInput.value;
+				product.age = ageInput.value;
+				product.rsoft = softInput.value;
+				product.rcpu = cpuInput.value;
+				product.rgpu = gpuInput.value;
+				product.rram = ramInput.value;
+				product.ros = osInput.value;
+				product.video = videoInput.value;
+				
+				if (!titleInput.value || !priceInput.value) {
+					alert('Please fill in all the fields of the form.');
+					return;
+				}
+
+                // Отправляем обновленные данные на сервер
+                fetch(`${endpoint}/${product.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(product),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // После успешного сохранения, закрываем модальное окно и обновляем список продуктов
+                        editModal.style.display = 'none';
+                        loadProducts(endpoint, user);
+                    })
+                    .catch(error => {
+                        console.error('Error saving product:', error);
+                    });
+            });
+
+            // При нажатии кнопки "Cancel" закрываем модальное окно
+            const cancelButton = document.getElementById('cancelButton');
+            cancelButton.addEventListener('click', () => {
+                editModal.style.display = 'none';
+            });
+
+            // Открываем модальное окно
+            editModal.style.display = 'block';
+        }
+
+        // Функция для удаления продукта
+        function deleteProduct(productId, endpoint) {
+            // Здесь вы можете отправить запрос на удаление продукта с сервера
+            fetch(`${endpoint}/${productId}`, {
+                method: 'DELETE',
+            })
+                .then(response => response.json())
+                .then(() => {
+                    // После успешного удаления, перезагрузите список продуктов
+                    loadProducts(endpoint, user);
+                })
+                .catch(error => {
+                    console.error('Error deleting product:', error);
+                });
+        }
+    </script>
+</body>
+</html>
