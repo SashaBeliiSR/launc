@@ -166,7 +166,7 @@ if (!user) {
 						downloadButton.innerHTML = '<img src="photo/donwload.png" alt="Buy">'; // Измените текст кнопки
 						downloadButton.onclick = function () {
 							// Откройте программное обеспечение, перенаправив пользователя на страницу загрузки (soft.url)
-							window.location.href = soft.url;
+							top.location.href = soft.url;
 						};
 					} else {
 						if (softPrice > 0) {
@@ -213,7 +213,7 @@ if (!user) {
 									alert('Purchase successful. Software added to your inventory.');
 
 									// Перенаправьте пользователя на страницу загрузки после покупки
-									window.location.href = soft.url;
+									//window.location.href = soft.url;
 								} else {
 									alert('Insufficient funds. Please add funds to your account.');
 								}
