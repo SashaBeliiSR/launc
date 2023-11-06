@@ -147,13 +147,13 @@ if (!user) {
                     var downloadButton = document.getElementById('download-button');
 					var softPrice = parseFloat(soft.price);
 
-                    if (game.indev === true) {
+                    if (soft.indev === true) {
 						downloadButton.style.display = 'none'; // Скрываем кнопку "Купить"
 						
 						var inDevInfo = document.createElement('font');
 						inDevInfo.face = "Arial";
 						inDevInfo.color = "Red";
-						inDevInfo.textContent = 'The game is in development.';
+						inDevInfo.textContent = 'The software is in development.';
 						document.body.appendChild(inDevInfo);
 					}
 
