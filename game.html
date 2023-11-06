@@ -167,7 +167,8 @@ if (!user) {
 						downloadButton.innerHTML = '<img src="photo/donwload.png" alt="Buy">'; // Измените текст кнопки
 						downloadButton.onclick = function () {
 							// Откройте приложение (выполните здесь соответствующее действие)
-							top.location.href = game.url;
+							//top.location.href = game.url;
+							window.open(game.url, "_blank");
 						};
 					} else {
 						if (gamePrice > 0) {

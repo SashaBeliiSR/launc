@@ -166,7 +166,8 @@ if (!user) {
 						downloadButton.innerHTML = '<img src="photo/donwload.png" alt="Buy">'; // Измените текст кнопки
 						downloadButton.onclick = function () {
 							// Откройте программное обеспечение, перенаправив пользователя на страницу загрузки (soft.url)
-							top.location.href = soft.url;
+							//top.location.href = soft.url;
+							window.open(soft.url, "_blank");
 						};
 					} else {
 						if (softPrice > 0) {
