@@ -1,21 +1,93 @@
-<!DOCTYPE HTML>
-<html>
-	<head>
-	<title>Launc</title>
-		<meta charset="UTF-8">
-	</head>
-	<body background="https://sashabeliisr.github.io/launc/photo\fatal.png" style="background-size: 100% auto;">
-	<center>
-		<font face="Arial" size="16" color="red">404 Error</font><br>
-		<font face="Arial" size="16" color="white">¯\_(ツ)_/¯</font><br>
-		<font face="Arial" size="16" color="white">This page cannot be loaded!</font><br>
-		<font face="Arial" size="16" color="white">It has been deleted or renamed!</font><br>
-		<font face="Arial" size="3" color="white">Check if you have spelled the url correctly (for example: sashabeliisr.github.io/launc/)</font><br>
-		<font face="Arial" size="3" color="white">Check if the page is not prohibited on display in the browser(host file or any program)</font><br>
-		<font face="Arial" size="3" color="white">Check if the browser is allowed to display frames</font><br>
-		<font face="Arial" size="3" color="white">If nothing helps, go back to the main page</font><br>
-		<a href="https://sashabeliisr.github.io/launc/"><button style="background-color: #31A0E7"><font face="Arial" size="8" color="white">>>Back<<</font></button></a>
-	</center>
-	<div>
-	</body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Not Found</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+			background-color: #484745;
+        }
+
+        #parallax {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background: url('https://sashabeliisr.github.io/launc/photo/fatal.png') center/cover no-repeat;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        #content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1;
+            color: #fff;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 8em;
+            line-height: 1em;
+        }
+
+        p {
+            margin: 20px 0 30px;
+            font-size: 1.5em;
+        }
+
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #009688;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        a:hover {
+            background: #00796b;
+        }
+
+        #parallax::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+            pointer-events: none;
+            transform: translateZ(-1px) scale(2);
+        }
+    </style>
+    <script>
+        document.addEventListener('mousemove', function(e) {
+            let x = e.clientX / window.innerWidth - 0.5;
+            let y = e.clientY / window.innerHeight - 0.5;
+            document.getElementById('parallax').style.transform = 'rotateX(' + (y * 10) + 'deg) rotateY(' + (x * 10) + 'deg) translateZ(50px)';
+        });
+    </script>
+</head>
+<body>
+
+    <div id="parallax">
+        <div id="content">
+            <h1>404</h1>
+            <p>Oops! Something went wrong.</p>
+            <p>Maybe the page you are looking for might be in another castle.</p>
+            <a href="https://sashabeliisr.github.io/launc/">Home</a>
+        </div>
+    </div>
+
+</body>
 </html>
