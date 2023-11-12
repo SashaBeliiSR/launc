@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploading image history</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #uploadForm, #history, #result {
+            margin: 20px;
+        }
+
+        #history img {
+            max-width: 100px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        #history img:hover {
+            opacity: 0.7;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <h1>Uploading image history</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="image" id="imageInput" accept="image/*">
+        <button type="button" onclick="uploadImage()">Upload image</button>
+    </form>
+    <div id="result"></div>
+    
+    <h2>History</h2>
+    <div id="history"></div>
+
+    <button type="button" onclick="clearHistory()">Clear history</button>
+
+    <script>
+        // При загрузке страницы, отобразить сохраненную историю
+        $(document).ready(function () {
+            displayHistory();
+        });
+
+        function uploadImage() {
+            var formData = new FormData();
+            var fileInput = document.getElementById('imageInput');
+            formData.append('image', fileInput.files[0]);
+
+            $.ajax({
+                url: 'https://api.imgbb.com/1/upload?key=0a52d05e3ec4e4be090c24b79589cfc3',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    var imageUrl = data.data.url;
+                    var directLink = data.data.image.url;
+                    displayResult(imageUrl, directLink);
+                    saveToHistory(imageUrl);
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+        function displayResult(imageUrl, directLink) {
+            var resultContainer = document.getElementById('result');
+            resultContainer.innerHTML = `
+                <img src="${imageUrl}" alt="Uploaded Image" style="max-width: 100%">
+                <p>Прямая ссылка: <a href="${directLink}" target="_blank">${directLink}</a></p>
+            `;
+        }
+
+        function saveToHistory(imageUrl) {
+            var history = JSON.parse(localStorage.getItem('imageHistory')) || [];
+            history.push(imageUrl);
+            localStorage.setItem('imageHistory', JSON.stringify(history));
+            displayHistory();
+        }
+
+        function displayHistory() {
+            var historyContainer = document.getElementById('history');
+            historyContainer.innerHTML = '<h3>Last uploaded images:</h3>';
+            
+            var history = JSON.parse(localStorage.getItem('imageHistory')) || [];
+            history.forEach(function (imageUrl) {
+                historyContainer.innerHTML += `<img src="${imageUrl}" alt="History Image" onclick="previewImage('${imageUrl}')" />`;
+            });
+        }
+
+        function previewImage(imageUrl) {
+            var resultContainer = document.getElementById('result');
+            resultContainer.innerHTML = `<img src="${imageUrl}" alt="Preview Image" style="max-width: 100%">`;
+        }
+
+        function clearHistory() {
+            localStorage.removeItem('imageHistory');
+            displayHistory();
+        }
+    </script>
+</body>
+</html>
