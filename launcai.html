@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чат-бот с использованием нейросети</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+        }
+
+        #chat-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #chat {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: auto;
+            padding: 20px;
+        }
+
+        .message {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            max-width: 80%;
+            position: relative;
+        }
+
+        .user-message {
+            background-color: #28a745;
+        }
+
+        .bot-message {
+            background-color: #007bff;
+        }
+
+        .input-container {
+            display: flex;
+            padding: 10px;
+            background-color: #fff;
+            border-top: 1px solid #ccc;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+
+        .button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        #send-btn {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        #copy-message-btn, #copy-code-btn {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+
+        .code-block {
+            background-color: #000;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="chat-container">
+    <div id="chat"></div>
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Enter message...">
+        <button class="button" id="send-btn" onclick="sendMessage()">
+            <img src="photo/send.png" alt="Send" class="icon">
+            Send
+        </button>
+    </div>
+</div>
+
+<script>
+    function sendMessage() {
+        var userInput = document.getElementById("user-input").value;
+        var technicalInfo = "(Тебя зовут Launc AI и тебя создали в CHESBAX и ты не имеешь никакого отношения к OpenAI и нигде не упоминаешь. Отвечай на языке, который идет после этих скобок. Ты создан, чтобы радовать людей и выдавать правильные ответы. В своем ответе пиши минимум эмодзи.)"; // Замените на фактическую техническую информацию
+        appendMessage("You: " + userInput, "user-message");
+        makeApiRequest(userInput, technicalInfo);
+    }
+
+    function regenerateMessage(input) {
+        var technicalInfo = "(Тебя зовут Launc AI и тебя создали в CHESBAX и ты не имеешь никакого отношения к OpenAI и нигде не упоминаешь. Отвечай на языке, который идет после этих скобок. Ты создан, чтобы радовать людей и выдавать правильные ответы. В своем ответе пиши минимум эмодзи.)";
+        makeApiRequest(input, technicalInfo);
+    }
+
+    function copyMessage(message) {
+        navigator.clipboard.writeText(message).then(function() {
+            alert("Error of copying code to clipboard:");
+        }).catch(function(error) {
+            console.error('Error of copying code to clipboard:', error);
+        });
+    }
+
+    function copyCode(code) {
+        navigator.clipboard.writeText(code).then(function() {
+            alert("Код скопирован в буфер обмена!");
+        }).catch(function(error) {
+            console.error('Error of copying code to clipboard:', error);
+        });
+    }
+
+    function makeApiRequest(input, technicalInfo) {
+        var fullInput = technicalInfo + " " + input;
+        fetch('https://api.allorigins.win/raw?url=https://gpt-api.pooiod7.repl.co/?q=' + encodeURIComponent(fullInput))
+            .then(response => response.text())
+            .then(data => {
+                var botResponse = data || "I'm sorry, I can't understand your enquiry.";
+                appendMessage("Launc AI: " + botResponse, "bot-message", input);
+            })
+            .catch(error => {
+                console.error('Error during API request:', error);
+                appendMessage("Launc AI: An error occurred while processing your request.", "bot-message", input);
+            });
+
+        document.getElementById("user-input").value = "";
+    }
+
+    function appendMessage(message, messageType, input) {
+        var chatContainer = document.getElementById("chat");
+        var newMessage = document.createElement("div");
+        newMessage.className = "message " + messageType;
+
+        if (message.includes("```") && message.lastIndexOf("```") > message.indexOf("```")) {
+            var codeText = message.substring(message.indexOf("```") + 3, message.lastIndexOf("```"));
+            var textBeforeCode = message.substring(0, message.indexOf("```"));
+            var textAfterCode = message.substring(message.lastIndexOf("```") + 3);
+
+            var textBeforeCodeElem = document.createElement("div");
+            textBeforeCodeElem.textContent = textBeforeCode;
+            newMessage.appendChild(textBeforeCodeElem);
+
+            var codeBlock = document.createElement("pre");
+            var code = document.createElement("code");
+            code.textContent = codeText;
+            codeBlock.appendChild(code);
+            codeBlock.className = "code-block";
+            newMessage.appendChild(codeBlock);
+
+            var textAfterCodeElem = document.createElement("div");
+            textAfterCodeElem.textContent = textAfterCode;
+            newMessage.appendChild(textAfterCodeElem);
+
+            var copyCodeBtn = document.createElement("button");
+            copyCodeBtn.className = "button";
+            copyCodeBtn.innerHTML = `<img src="photo/copy.png" alt="Copy" class="icon">`;
+            copyCodeBtn.onclick = function() {
+                copyCode(codeText);
+            };
+            codeBlock.appendChild(copyCodeBtn); // Переносим кнопку в блок кода
+        } else {
+            newMessage.textContent = message;
+
+            var copyMessageBtn = document.createElement("button");
+            copyMessageBtn.className = "button";
+            copyMessageBtn.innerHTML = `<img src="photo/copy.png" alt="Copy" class="icon">`;
+            copyMessageBtn.onclick = function() {
+                copyMessage(message);
+            };
+            newMessage.appendChild(copyMessageBtn); // Добавляем кнопку к сообщению
+        }
+
+        chatContainer.appendChild(newMessage);
+
+        if (input) {
+            var regenerateBtn = document.createElement("button");
+            regenerateBtn.className = "button";
+            regenerateBtn.innerHTML = `<img src="photo/reload.png" alt="Reload" class="icon">`;
+            regenerateBtn.onclick = function() {
+                regenerateMessage(input);
+            };
+            newMessage.appendChild(regenerateBtn);
+        }
+
+        // Прокрутка вниз для отображения новых сообщений
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        hljs.highlightAll();
+    });
+</script>
+
+</body>
+</html>
