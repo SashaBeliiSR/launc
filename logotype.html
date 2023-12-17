@@ -125,6 +125,7 @@
 		color: #000;		
 		}
     </style>
+	<script type="text/javascript" src="games\translate.js"></script>
     <script>
 	// Шаг 1: Получить имя пользователя из localStorage
 	var user = localStorage.getItem('user');
@@ -313,7 +314,8 @@ if (!user) {
             </div>
         </div>
     </div>
-	<font face="Arial" size="4" color="white" style="background-color: #3C3D3A;">Right now launc core is still in development, so shopping is not recommended! Please wait the new update 2024. Contact: awesome.chesbax@yandex.ru</font>
+	<div style="width:100%; font-family:Arial; font-size:18px; color:white; background-color:#3C3D3A; padding:10px; box-sizing:border-box; display:block; box-shadow:0 0 5px rgba(0, 0, 0, 0.3);">Right now launc core is still in development, so shopping is not recommended! Please wait the new update 2024. Contact: awesome.chesbax@yandex.ru</div>
+
 	<script>
         // Загружаем текущую тему из Local Storage при загрузке страницы
         const savedTheme = localStorage.getItem('theme');

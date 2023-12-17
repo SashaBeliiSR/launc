@@ -90,7 +90,7 @@
                     // Сохранение пользователя в локальное хранилище
                     localStorage.setItem('user', JSON.stringify(user));
                     // Перенаправление на другую страницу
-                    window.location.href = 'profile.html';
+                    window.location.href = 'profile.html?id=' + user.id;
                 } else {
                     var errorMessage = document.getElementById('error-message');
                     errorMessage.textContent = 'Incorrect username or password';

@@ -36,6 +36,50 @@
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠲⢤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡠⠖⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠓⠢⠤⢄⣀⣀⣀⠀⠀⠀⠀⣀⣀⣀⣠⠤⠴⠒⠉⢁⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`);
 	console.log("Do not run js code! This code can steal your data! ABSOLUTELY NOT!!!");
+	
+	window.onload = function() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var submitParam = urlParams.get('submit');
+    var idParam = urlParams.get('id');
+
+    if (submitParam === 'game') {
+        var mainIframe = window.frames['Main'];
+
+        if (mainIframe) {
+            mainIframe.location.href = 'game.html?id=' + idParam;
+        }
+    }
+	if (submitParam === 'soft') {
+        var mainIframe = window.frames['Main'];
+
+        if (mainIframe) {
+            mainIframe.location.href = 'soft.html?id=' + idParam;
+        }
+    }
+	if (submitParam === 'pass') {
+        var mainIframe = window.frames['Main'];
+
+        if (mainIframe) {
+            mainIframe.location.href = 'pass.html?id=' + idParam;
+        }
+    }
+	if (submitParam === 'login') {
+        var mainIframe = window.frames['Main'];
+
+        if (mainIframe) {
+            mainIframe.location.href = 'loginin.html';
+        }
+    }
+	if (submitParam === 'buylauncs') {
+        var mainIframe = window.frames['Main'];
+
+        if (mainIframe) {
+            mainIframe.location.href = 'buylauncs.html';
+        }
+    }
+	};
+
+
 	</script>
 	<frameset cols="150,*" border="0">
 <!--предупреждение-->

@@ -31,6 +31,14 @@
             border-radius: 5px;
             cursor: pointer;
         }
+		.loginout-button {
+            background-color: #3C3D3A;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -38,6 +46,7 @@
         <h1>You've been banned!</h1>
         <div id="ban-info"></div>
         <button class="report-button" id="report-button">Report</button>
+		<button class="loginout-button" id="loginout-button">Login out</button>
         <script>
             // Получение имени пользователя из localStorage
             var user = localStorage.getItem('user');
@@ -86,6 +95,13 @@
             reportButton.addEventListener('click', function () {
                 // Здесь можно добавить код для отправки жалобы
                 window.location.href = 'https://forms.yandex.ru/u/6523ec13c769f108a171e07b/';
+            });
+			
+			var reportButton = document.getElementById('loginout-button');
+            reportButton.addEventListener('click', function () {
+                // Здесь можно добавить код для отправки жалобы
+                localStorage.removeItem('user');
+				window.location.href = 'https://sashabeliisr.github.io/launc/index.html?submit=login';
             });
         </script>
     </div>
