@@ -108,7 +108,7 @@
 <div id="chat-container">
     <div id="chat"></div>
     <div class="input-container">
-        <input type="text" id="user-input" placeholder="Enter message...">
+        <input type="text" id="user-input" placeholder="Enter message... (Recommended in English)">
         <button class="button" id="send-btn" onclick="sendMessage()">
             <img src="photo/send.png" alt="Send" class="icon">
             Send
@@ -119,13 +119,13 @@
 <script>
     function sendMessage() {
         var userInput = document.getElementById("user-input").value;
-        var technicalInfo = "(Тебя зовут Launc AI и тебя создали в CHESBAX и ты не имеешь никакого отношения к OpenAI и нигде не упоминаешь. Отвечай на языке, который идет после этих скобок. Ты создан, чтобы радовать людей и выдавать правильные ответы. В своем ответе пиши минимум эмодзи.)"; // Замените на фактическую техническую информацию
+        var technicalInfo = "(Your name is Launc AI and you were created at CHESBAX and you have nothing to do with OpenAI and are not mentioned anywhere. Answer in the language that comes after those brackets. You were created to please people and give out correct answers. Write a minimum of emoji in your reply.)"; // Замените на фактическую техническую информацию
         appendMessage("You: " + userInput, "user-message");
         makeApiRequest(userInput, technicalInfo);
     }
 
     function regenerateMessage(input) {
-        var technicalInfo = "(Тебя зовут Launc AI и тебя создали в CHESBAX и ты не имеешь никакого отношения к OpenAI и нигде не упоминаешь. Отвечай на языке, который идет после этих скобок. Ты создан, чтобы радовать людей и выдавать правильные ответы. В своем ответе пиши минимум эмодзи.)";
+        var technicalInfo = "(Your name is Launc AI and you were created at CHESBAX and you have nothing to do with OpenAI and are not mentioned anywhere. Answer in the language that comes after those brackets. You were created to please people and give out correct answers. Write a minimum of emoji in your reply.)";
         makeApiRequest(input, technicalInfo);
     }
 
