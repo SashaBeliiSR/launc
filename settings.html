@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit profile</title>
+	<script type="text/javascript" src="games\translate.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -202,7 +203,20 @@ function checkNameUniqueness(name) {
         });
 }
 
+	function changeLanguage() {
+            const selectedLanguage = document.getElementById('languageSelect').value;
+            localStorage.setItem('language', selectedLanguage);
 
+            // Перезагрузка страницы для применения изменений языка
+            location.reload();
+        }
+		
+		// Получаем языковую настройку из локального хранилища
+        const selectedLanguage = localStorage.getItem('language') || 'en';
+
+        // Переводим текст на выбранный язык
+        document.getElementById('textToTranslate').textContent = translateText('textToTranslate', selectedLanguage);
+        document.getElementById('anotherTextToTranslate').textContent = translateText('anotherTextToTranslate', selectedLanguage);
     </script>
 </head>
 <body>
@@ -229,7 +243,14 @@ function checkNameUniqueness(name) {
 		<input type="radio" id="lightTheme" name="theme" value="light"><br>
 		<label for="darkTheme">Dark</label>
 		<input type="radio" id="darkTheme" name="theme" value="dark">
-		<button id="saveThemeButton">Save theme</button>
+		<button id="saveThemeButton">Save theme</button><br><br>
+		<label for="languageSelect">Select Language:</label>
+        <select id="languageSelect">
+            <option value="en">English</option>
+            <option value="ru">Русский</option>
+			<option value="md">Moldoviniacă</option>
+        </select>
+        <button onclick="changeLanguage()">Change Language</button>
         <div class="form-actions">
             <button onclick="saveChanges()">Apply</button>
             <button onclick="cancelChanges()">Cancel</button>
