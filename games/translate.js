@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	  'App Required:': 'Приложение требует:',
 	  'V': 'В',
 	  'App id:': 'Id приложения:'
-    }
+    },
 	md: {
       'Login in': 'Intrare',
       'User name:': 'Numele utilizatorului:',
@@ -74,7 +74,42 @@ document.addEventListener('DOMContentLoaded', function() {
 	  'App Required:': 'Cererea necesită:',
 	  'V': 'V',
 	  'App id:': 'ID cererii:'
-    }
+    },
+	uk: {
+      'Login in': 'Вход',
+      'User name:': 'Имя пользователя:',
+	  'Password:': 'Пароль:',
+	  'No account?': 'Нет аккаунта?',
+	  'Join': 'Войти',
+	  'Sing up': 'Регистрация',
+	  'Home': 'Дом',
+	  'Blog': 'Блог',
+	  'Games': 'Игры',
+	  'Softwr': 'Софт',
+	  'Market': 'Маркет',
+	  'Search': 'Поист',
+	  'Create': 'Начать',
+	  'Library': 'Библио',
+	  'My AI': 'Мой ИИ',
+	  'Help': 'Помощ',
+	  'Login': 'Вход',
+	  'Settings': 'Настройки',
+	  'Login out': 'Выход',
+	  'Name:': 'Имя:',
+	  'Email:': 'Email:',
+	  'Icon (URL):': 'Иконка (URL):',
+	  'Choose a theme:': 'Выберите тему:',
+	  'Light': 'Светлая',
+	  'Dark': 'Тёмная',
+	  'Right now launc core is still in development, so shopping is not recommended! Please wait the new update 2024. Contact: awesome.chesbax@yandex.ru': 'Сейчас ядро launc все еще находится в разработке, поэтому покупки не рекомендуются! Пожалуйста, подождите нового обновления 2024. Контакт: awesome.chesbax@yandex.ru',
+	  'Buy Launcs': 'Купить Лаунчи',
+	  'Gaming currency for real currency': 'Игровая валюта за реальную валюту',
+	  'Software': 'Программы',
+	  'See all': 'Смотреть всё',
+	  'App Required:': 'Приложение требует:',
+	  'V': 'В',
+	  'App id:': 'Id приложения:'
+    },
   };
 
   const elements = document.body.getElementsByTagName('*');
