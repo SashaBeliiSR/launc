@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	  'See all': 'Дивитися все',
 	  'App Required:': 'Додаток вимагає:',
 	  'V': 'В',
-	  'App id:': 'Id додатка:'.
+	  'App id:': 'Id додатка:'
     }
   };
 
