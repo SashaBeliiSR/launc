@@ -88,12 +88,23 @@
                 var profileNameInput = document.getElementById('profile-name');
                 var profilePasswordInput = document.getElementById('profile-password');
                 var profileavatarInput = document.getElementById('profile-avatar');
+				var profileemailInput = document.getElementById('profile-email');
 
                 profileNameInput.value = user.name;
-                profilePasswordInput.value = user.password;
+                //profilePasswordInput.value = user.password;
+				profilePasswordInput.value = "*******";
                 profileavatarInput.value = user.avatar;
+				profileemailInput.value = user.email;
             }
         });
+		
+		function hashPassword(password) {
+		  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(password))
+			.then(hash => {
+			  const hexHash = Array.prototype.map.call(new Uint8Array(hash), x => ('00' + x.toString(16)).slice(-2)).join('');
+			  return hexHash;
+			});
+		}
 
         function saveChanges() {
     var user = JSON.parse(localStorage.getItem('user'));
@@ -114,7 +125,7 @@
                         alert('This name is already in use. Please choose a different name.');
                     } else {
                         user.name = updatedName;
-                        user.password = profilePasswordInput.value;
+                        user.password = hashPassword(profilePasswordInput.value);
                         user.avatar = profileavatarInput.value;
                         user.email = profileEmailInput.value;
         

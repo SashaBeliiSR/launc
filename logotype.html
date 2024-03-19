@@ -234,7 +234,8 @@ if (!user) {
                         var balance = currentUser.balance;
                         balanceText.textContent = balance;
                         profileBalance.addEventListener('click', function() {
-                            window.parent.frames['Main'].location.href = 'buylauncs.html';
+                            //window.parent.frames['_top'].location.href = 'index.html?submit=buylauncs';
+							window.top.location.href = 'index.html?submit=buylauncs';
                         });
                     }
                 })
@@ -294,13 +295,13 @@ if (!user) {
   </div>
 </div>
     <div class="profile-container">
-		<a href="buylauncs.html" target="Main">
+		<a href="index.html?submit=buylauncs" target="_top">
         <div class="profile-balance" id="profile-balance">
             <img class="balance-icon" src="photo/money.png" alt="Money"></a>
             <span id="balance-text" class="balance-text"></span>
         </div>
         <div class="profile-info">
-			<a href="loginin.html" target="Main" style="color: black; font-family: Arial; text-decoration: none;">Login</a><p>ㅤ</p>
+			<a href="index.html?submit=login" target="_top" style="color: black; font-family: Arial; text-decoration: none;">Login</a><p>ㅤ</p>
             <img id="profile-avatar" class="profile-avatar" src="" alt="User Avatar">
 			<span id="profileId" class="profile-id"></span> <!-- Добавлено -->
 			<p>ㅤ</p>

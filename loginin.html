@@ -67,12 +67,19 @@
     </style>
     <script>
 	// Функция для хэширования пароля
-        function hashPassword(password) {
-            // В реальных условиях использования, вам следует использовать библиотеку для более безопасного хэширования.
-            var hashedPassword = btoa(password); // Это упрощенное хэширование для примера.
+        <!-- function hashPassword(password) { -->
+            <!-- // В реальных условиях использования, вам следует использовать библиотеку для более безопасного хэширования. -->
+            <!-- var hashedPassword = btoa(password); // Это упрощенное хэширование для примера. -->
 
-            return hashedPassword;
-        }
+            <!-- return hashedPassword; -->
+        <!-- } -->
+		function hashPassword(password) {
+		  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(password))
+			.then(hash => {
+			  const hexHash = Array.prototype.map.call(new Uint8Array(hash), x => ('00' + x.toString(16)).slice(-2)).join('');
+			  return hexHash;
+			});
+		}
 	
     function login() {
         var username = document.getElementById('username').value;
