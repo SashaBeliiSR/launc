@@ -108,15 +108,21 @@
 		}
 	
         async function checkExistingUser(name) {
-            try {
-                const response = await fetch("https://6455f3055f9a4f2361374d32.mockapi.io/prefiles?name=" + name);
-                const data = await response.json();
-                return data.length > 0; // Если есть пользователи с таким именем, возвращаем true
-            } catch (error) {
-                console.error("Error when validating an existing user:", error);
-                return false;
-            }
+    try {
+        const response = await fetch("https://6455f3055f9a4f2361374d32.mockapi.io/prefiles?name=" + name);
+        if (response.ok) {
+            const data = await response.json();
+            return data.length > 0; // Если есть пользователи с таким именем, возвращаем true
+        } else {
+            console.error("Server returned status:", response.status);
+            return false;
         }
+    } catch (error) {
+        console.error("Error when validating an existing user:", error);
+        return false;
+    }
+}
+
 
         async function registerUser() {
             var nameInput = document.getElementById('name');
